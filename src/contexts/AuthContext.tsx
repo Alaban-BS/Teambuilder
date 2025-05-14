@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { User } from '../types';
+import { users, verifyPassword } from '../config/users';
 
 interface AuthContextType {
   user: User | null;
@@ -44,20 +45,26 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setLoading(true);
       setError(null);
 
-      // TODO: Replace with actual API call
-      // This is a mock implementation
-      if (username === 'admin' && password === 'admin') {
-        const mockUser: User = {
-          id: '1',
-          username: 'admin',
-          role: 'admin',
-          email: 'admin@example.com'
-        };
-        setUser(mockUser);
-        localStorage.setItem('user', JSON.stringify(mockUser));
-      } else {
+      // Find user by username or email
+      const foundUser = users.find(
+        u => u.username === username || u.email === username
+      );
+
+      if (!foundUser) {
         throw new Error('Invalid credentials');
       }
+
+      // Verify password
+      const isValid = await verifyPassword(password, foundUser.passwordHash);
+      
+      if (!isValid) {
+        throw new Error('Invalid credentials');
+      }
+
+      // Create user object without password hash
+      const { passwordHash, ...userWithoutPassword } = foundUser;
+      setUser(userWithoutPassword);
+      localStorage.setItem('user', JSON.stringify(userWithoutPassword));
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred during login');
       throw err;

@@ -50,6 +50,10 @@ export interface User {
   email: string;
 }
 
+export interface UserWithPassword extends User {
+  passwordHash: string;
+}
+
 export interface Toast {
   id: string;
   type: 'success' | 'error' | 'info' | 'warning';
