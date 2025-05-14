@@ -15,6 +15,7 @@ A React TypeScript application for managing teams, players, staff, seasons, and 
 - Confirmation dialogs
 - Loading states
 - Local storage persistence
+- Automated deployment with GitHub Actions
 
 ## Prerequisites
 
@@ -25,7 +26,7 @@ A React TypeScript application for managing teams, players, staff, seasons, and 
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/teambuilder.git
+git clone https://github.com/Alaban-BS/Teambuilder.git
 cd teambuilder
 ```
 
@@ -40,6 +41,10 @@ npm start
 ```
 
 The application will be available at `http://localhost:3000`.
+
+## Deployment
+
+The application is automatically deployed to GitHub Pages when changes are pushed to the main branch. Visit the deployed site at: https://alaban-bs.github.io/Teambuilder
 
 ## Project Structure
 
