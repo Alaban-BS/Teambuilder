@@ -1,64 +1,117 @@
 # Teambuilder
 
-A comprehensive team assignment and management tool for sports organizations. This application helps team coordinators and administrators manage team assignments, player rosters, and staff assignments efficiently.
+A React TypeScript application for managing teams, players, staff, seasons, and scenarios.
 
 ## Features
 
-- User Authentication with Role-Based Access Control
-- Team Management
-- Player Assignment
-- Staff Management
-- Season Planning
-- Scenario Creation and Management
-- Drag-and-Drop Interface for Team Assignments
-- Undo/Redo Functionality
-- Responsive Design
+- User authentication with role-based access control
+- Team management (create, read, update, delete)
+- Player management
+- Staff management
+- Season management
+- Scenario management with team assignments
+- Responsive design
+- Toast notifications
+- Confirmation dialogs
+- Loading states
+- Local storage persistence
 
-## Getting Started
+## Prerequisites
 
-1. Clone the repository
+- Node.js (v14 or higher)
+- npm (v6 or higher)
+
+## Installation
+
+1. Clone the repository:
+```bash
+git clone https://github.com/yourusername/teambuilder.git
+cd teambuilder
+```
+
 2. Install dependencies:
-   ```bash
-   npm install
-   ```
+```bash
+npm install
+```
+
 3. Start the development server:
-   ```bash
-   npm run dev
-   ```
+```bash
+npm start
+```
+
+The application will be available at `http://localhost:3000`.
+
+## Project Structure
+
+```
+src/
+  ├── components/
+  │   ├── auth/
+  │   │   ├── LoginPage.tsx
+  │   │   ├── ProtectedRoute.tsx
+  │   │   └── UnauthorizedPage.tsx
+  │   ├── common/
+  │   │   ├── Toast.tsx
+  │   │   ├── ConfirmationDialog.tsx
+  │   │   └── LoadingSpinner.tsx
+  │   └── TCDashboard.tsx
+  ├── contexts/
+  │   ├── AuthContext.tsx
+  │   └── AppContext.tsx
+  ├── hooks/
+  │   ├── useLocalStorage.ts
+  │   ├── useDataTable.ts
+  │   └── useUndoRedo.ts
+  ├── styles/
+  │   ├── global.css
+  │   ├── LoginPage.css
+  │   ├── Toast.css
+  │   ├── ConfirmationDialog.css
+  │   └── LoadingSpinner.css
+  ├── types.ts
+  ├── utils/
+  │   └── helpers.ts
+  └── App.tsx
+```
+
+## Available Scripts
+
+- `npm start` - Runs the app in development mode
+- `npm test` - Launches the test runner
+- `npm run build` - Builds the app for production
+- `npm run eject` - Ejects from Create React App
 
 ## User Roles
 
-- **Admin**: Full access to all features
-- **Team Coordinator (TC)**: Can manage teams, players, and scenarios
+- Admin: Full access to all features
+- TC (Team Coordinator): Can manage teams, players, staff, and scenarios
+- Coordinator: Can view teams and scenarios
 
-## Default Login Credentials
+## Development
 
-- Team Coordinator:
-  - Email: antjanlaban@gmail.com
-  - Password: 039600
+### Adding New Features
 
-- Admin:
-  - Email: admin
-  - Password: 463100
+1. Create new components in the `src/components` directory
+2. Add new types in `src/types.ts`
+3. Create new styles in the `src/styles` directory
+4. Update the README.md with new features
 
-## Technologies Used
+### Code Style
 
-- React
-- TypeScript
-- Vite
-- React Router
-- DnD Kit for drag-and-drop functionality
-- CSS Modules for styling
+- Use TypeScript for type safety
+- Follow React best practices
+- Use functional components with hooks
+- Implement proper error handling
+- Add loading states for async operations
+- Use CSS modules or styled-components for styling
 
-## Documentation
+## Contributing
 
-Detailed documentation can be found in the `docs` directory:
-
-- [Architecture Overview](docs/architecture/system-overview.md)
-- [Component Structure](docs/development/component-structure.md)
-- [User Guide](docs/user-guides/manual.md)
-- [Development Guidelines](docs/development/guidelines.md)
+1. Fork the repository
+2. Create a new branch
+3. Make your changes
+4. Submit a pull request
 
 ## License
 
-MIT
+This project is licensed under the MIT License - see the LICENSE file for details.

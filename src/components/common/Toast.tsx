@@ -30,14 +30,37 @@ export function Toast({ toast }: { toast: ToastType }) {
   );
 }
 
-export function ToastContainer() {
-  const { state } = useApp();
+export const ToastContainer: React.FC = () => {
+  const { state, dispatch } = useApp();
+
+  useEffect(() => {
+    const timers = state.toasts.map(toast => {
+      if (toast.duration) {
+        return setTimeout(() => {
+          dispatch({ type: 'REMOVE_TOAST', payload: toast.id });
+        }, toast.duration);
+      }
+      return null;
+    });
+
+    return () => {
+      timers.forEach(timer => {
+        if (timer) clearTimeout(timer);
+      });
+    };
+  }, [state.toasts, dispatch]);
 
   return (
     <div className="toast-container" role="region" aria-label="Notifications">
       {state.toasts.map((toast) => (
-        <Toast key={toast.id} toast={toast} />
+        <div
+          key={toast.id}
+          className={`toast toast-${toast.type}`}
+          onClick={() => dispatch({ type: 'REMOVE_TOAST', payload: toast.id })}
+        >
+          {toast.message}
+        </div>
       ))}
     </div>
   );
-} 
+}; 

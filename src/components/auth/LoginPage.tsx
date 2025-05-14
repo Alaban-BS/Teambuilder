@@ -1,36 +1,62 @@
 import React, { useState } from 'react';
-import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext';
+import { useApp } from '../../contexts/AppContext';
 import '../../styles/LoginPage.css';
 
-export function LoginPage() {
-  const [email, setEmail] = useState('');
+export const LoginPage: React.FC = () => {
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const { login, state } = useAuth();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { login } = useAuth();
+  const { dispatch } = useApp();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await login({ email, password });
-    if (state.isAuthenticated) {
+    setIsSubmitting(true);
+
+    try {
+      await login(username, password);
+      dispatch({
+        type: 'ADD_TOAST',
+        payload: {
+          id: Date.now().toString(),
+          type: 'success',
+          message: 'Login successful',
+          duration: 3000
+        }
+      });
       navigate('/dashboard');
+    } catch (error) {
+      dispatch({
+        type: 'ADD_TOAST',
+        payload: {
+          id: Date.now().toString(),
+          type: 'error',
+          message: error instanceof Error ? error.message : 'Login failed',
+          duration: 5000
+        }
+      });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   return (
     <div className="login-container">
       <div className="login-card">
-        <h1>Team Assignment Tool</h1>
-        <form onSubmit={handleSubmit} className="login-form">
+        <h1>Teambuilder Login</h1>
+        <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label htmlFor="email">Email</label>
+            <label htmlFor="username">Username</label>
             <input
               type="text"
-              id="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              id="username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
               required
-              placeholder="Enter your email"
+              disabled={isSubmitting}
             />
           </div>
           <div className="form-group">
@@ -41,21 +67,18 @@ export function LoginPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              placeholder="Enter your password"
+              disabled={isSubmitting}
             />
           </div>
-          {state.error && (
-            <div className="error-message">{state.error}</div>
-          )}
           <button
             type="submit"
             className="login-button"
-            disabled={state.isLoading}
+            disabled={isSubmitting}
           >
-            {state.isLoading ? 'Logging in...' : 'Login'}
+            {isSubmitting ? 'Logging in...' : 'Login'}
           </button>
         </form>
       </div>
     </div>
   );
-} 
+}; 

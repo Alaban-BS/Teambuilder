@@ -1,79 +1,81 @@
 import React, { createContext, useContext, useReducer, ReactNode } from 'react';
-import { Toast, LoadingState, ErrorState, ConfirmationDialog, Session } from '../types/common';
+import { Toast } from '../types';
 
 interface AppState {
   toasts: Toast[];
-  loading: LoadingState;
-  error: ErrorState;
-  confirmationDialog: ConfirmationDialog;
-  session: Session | null;
+  isLoading: boolean;
+  confirmationDialog: {
+    isOpen: boolean;
+    title: string;
+    message: string;
+    onConfirm: (() => void) | null;
+    onCancel: (() => void) | null;
+  };
 }
 
 type AppAction =
   | { type: 'ADD_TOAST'; payload: Toast }
   | { type: 'REMOVE_TOAST'; payload: string }
-  | { type: 'SET_LOADING'; payload: LoadingState }
-  | { type: 'SET_ERROR'; payload: ErrorState }
-  | { type: 'SET_CONFIRMATION_DIALOG'; payload: ConfirmationDialog }
-  | { type: 'SET_SESSION'; payload: Session | null };
+  | { type: 'SET_LOADING'; payload: boolean }
+  | { type: 'SHOW_CONFIRMATION_DIALOG'; payload: Omit<AppState['confirmationDialog'], 'isOpen'> }
+  | { type: 'HIDE_CONFIRMATION_DIALOG' };
 
 const initialState: AppState = {
   toasts: [],
-  loading: { isLoading: false },
-  error: { hasError: false },
+  isLoading: false,
   confirmationDialog: {
     isOpen: false,
     title: '',
     message: '',
-    onConfirm: () => {},
-    onCancel: () => {},
-  },
-  session: null,
+    onConfirm: null,
+    onCancel: null
+  }
 };
 
 const AppContext = createContext<{
   state: AppState;
   dispatch: React.Dispatch<AppAction>;
-} | null>(null);
+} | undefined>(undefined);
 
 function appReducer(state: AppState, action: AppAction): AppState {
   switch (action.type) {
     case 'ADD_TOAST':
       return {
         ...state,
-        toasts: [...state.toasts, action.payload],
+        toasts: [...state.toasts, action.payload]
       };
     case 'REMOVE_TOAST':
       return {
         ...state,
-        toasts: state.toasts.filter((toast) => toast.id !== action.payload),
+        toasts: state.toasts.filter(toast => toast.id !== action.payload)
       };
     case 'SET_LOADING':
       return {
         ...state,
-        loading: action.payload,
+        isLoading: action.payload
       };
-    case 'SET_ERROR':
+    case 'SHOW_CONFIRMATION_DIALOG':
       return {
         ...state,
-        error: action.payload,
+        confirmationDialog: {
+          ...action.payload,
+          isOpen: true
+        }
       };
-    case 'SET_CONFIRMATION_DIALOG':
+    case 'HIDE_CONFIRMATION_DIALOG':
       return {
         ...state,
-        confirmationDialog: action.payload,
-      };
-    case 'SET_SESSION':
-      return {
-        ...state,
-        session: action.payload,
+        confirmationDialog: {
+          ...state.confirmationDialog,
+          isOpen: false
+        }
       };
     default:
       return state;
   }
 }
 
-export function AppProvider({ children }: { children: ReactNode }) {
+export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [state, dispatch] = useReducer(appReducer, initialState);
 
   return (
@@ -81,12 +83,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
       {children}
     </AppContext.Provider>
   );
-}
+};
 
-export function useApp() {
+export const useApp = () => {
   const context = useContext(AppContext);
   if (!context) {
     throw new Error('useApp must be used within an AppProvider');
   }
   return context;
-} 
+}; 

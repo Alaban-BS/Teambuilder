@@ -1,19 +1,23 @@
 import React from 'react';
 import { useApp } from '../../contexts/AppContext';
+import { LoadingSpinnerProps } from '../../types';
 import '../../styles/LoadingSpinner.css';
 
-export function LoadingSpinner() {
+export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
+  size = 'medium',
+  color = '#4a90e2',
+  overlay = false
+}) => {
   const { state } = useApp();
-  const { isLoading, message } = state.loading;
 
-  if (!isLoading) return null;
+  if (!state.isLoading) return null;
 
   return (
-    <div className="loading-spinner-overlay" role="alert" aria-busy="true">
-      <div className="loading-spinner-container">
-        <div className="loading-spinner" />
-        {message && <p className="loading-message">{message}</p>}
-      </div>
+    <div className={`loading-spinner-container ${overlay ? 'overlay' : ''}`}>
+      <div
+        className={`loading-spinner ${size}`}
+        style={{ borderTopColor: color }}
+      />
     </div>
   );
-} 
+}; 
