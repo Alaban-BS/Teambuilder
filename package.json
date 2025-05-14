@@ -1,7 +1,7 @@
 {
-  "name": "react-typescript",
+  "name": "team-coordinator",
   "version": "1.0.0",
-  "description": "React and TypeScript example starter project",
+  "description": "A comprehensive team assignment and management tool for sports organizations",
   "keywords": [
     "typescript",
     "react",
@@ -31,7 +31,9 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "jest",
+    "test:watch": "jest --watch"
   },
   "browserslist": [
     ">0.2%",
