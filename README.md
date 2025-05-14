@@ -1,4 +1,4 @@
-# Team Coordinator
+# Teambuilder
 
 A comprehensive team assignment and management tool for sports organizations. This application helps team coordinators and administrators manage team assignments, player rosters, and staff assignments efficiently.
 
