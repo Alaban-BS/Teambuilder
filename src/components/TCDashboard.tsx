@@ -67,14 +67,26 @@ function TCDashboard({
       onTeamUpdate(editingTeam);
       setEditingTeam(null);
     } else if (isCreatingTeam) {
-      // Generate a temporary ID - in real app, this would come from the backend
       const newTeam = {
-        ...editingTeam!,
-        id: `team-${Date.now()}`,
+        name: editingTeam!.name,
+        maxPlayers: editingTeam!.maxPlayers,
+        players: [],
+        staff: [],
       };
       onTeamCreate(newTeam);
       setIsCreatingTeam(false);
     }
+  };
+
+  const handleCreateTeam = () => {
+    setIsCreatingTeam(true);
+    setEditingTeam({
+      id: '',
+      name: '',
+      maxPlayers: 12,
+      players: [],
+      staff: [],
+    });
   };
 
   const handlePlayerSubmit = (e: React.FormEvent) => {
@@ -83,10 +95,10 @@ function TCDashboard({
       onPlayerUpdate(editingPlayer);
       setEditingPlayer(null);
     } else if (isCreatingPlayer) {
-      // Generate a temporary ID - in real app, this would come from the backend
       const newPlayer = {
         ...editingPlayer!,
         id: `player-${Date.now()}`,
+        gender: editingPlayer!.gender as 'male' | 'female' | 'other',
       };
       onPlayerCreate(newPlayer);
       setIsCreatingPlayer(false);
@@ -104,6 +116,16 @@ function TCDashboard({
     }
   };
 
+  const handleCreateStaff = () => {
+    setIsCreatingStaff(true);
+    setEditingStaff({
+      id: '',
+      name: '',
+      role: 'coach',
+      teamId: undefined,
+    });
+  };
+
   const handleSeasonSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (editingSeason) {
@@ -113,6 +135,17 @@ function TCDashboard({
       onSeasonCreate(editingSeason!);
       setIsCreatingSeason(false);
     }
+  };
+
+  const handleCreateSeason = () => {
+    setIsCreatingSeason(true);
+    setEditingSeason({
+      id: '',
+      name: '',
+      startDate: new Date().toISOString().split('T')[0],
+      endDate: new Date().toISOString().split('T')[0],
+      isActive: true,
+    });
   };
 
   const handleScenarioSubmit = (e: React.FormEvent) => {
@@ -127,10 +160,26 @@ function TCDashboard({
       onScenarioCreate({
         name: editingScenario!.name,
         status: editingScenario!.status,
-        teamAssignments: editingScenario!.teamAssignments,
+        teamAssignments: editingScenario!.teamAssignments.map(assignment => ({
+          teamId: assignment.teamId,
+          players: [...assignment.players],
+          staff: [...assignment.staff]
+        }))
       });
       setIsCreatingScenario(false);
     }
+  };
+
+  const handleCreateScenario = () => {
+    setIsCreatingScenario(true);
+    setEditingScenario({
+      id: '',
+      name: '',
+      status: 'draft',
+      teamAssignments: [],
+      lastUpdated: new Date().toISOString(),
+      createdBy: currentUserId,
+    });
   };
 
   const handleDuplicateScenario = (scenario: Scenario) => {
@@ -221,7 +270,12 @@ function TCDashboard({
                   value={editingScenario?.name || ''}
                   onChange={(e) =>
                     setEditingScenario((prev) =>
-                      prev ? { ...prev, name: e.target.value } : null
+                      prev
+                        ? {
+                            ...prev,
+                            name: e.target.value,
+                          }
+                        : null
                     )
                   }
                   required
@@ -238,14 +292,14 @@ function TCDashboard({
                       prev
                         ? {
                             ...prev,
-                            status: e.target.value as 'draft' | 'final' | 'archived',
+                            status: e.target.value as 'draft' | 'active' | 'archived',
                           }
                         : null
                     )
                   }
                 >
                   <option value="draft">Draft</option>
-                  <option value="final">Final</option>
+                  <option value="active">Active</option>
                   <option value="archived">Archived</option>
                 </select>
               </div>
@@ -361,6 +415,600 @@ function TCDashboard({
     </div>
   );
 
+  const renderPlayerForm = () => (
+    <form className="edit-form" onSubmit={handlePlayerSubmit}>
+      <h4>{isCreatingPlayer ? 'Create Player' : 'Edit Player'}</h4>
+      <div className="form-row">
+        <div className="form-group">
+          <label>First Name</label>
+          <input
+            type="text"
+            value={editingPlayer?.firstName || ''}
+            onChange={(e) =>
+              setEditingPlayer((prev) => ({
+                ...prev!,
+                firstName: e.target.value,
+              }))
+            }
+            required
+          />
+        </div>
+        <div className="form-group">
+          <label>Last Name</label>
+          <input
+            type="text"
+            value={editingPlayer?.lastName || ''}
+            onChange={(e) =>
+              setEditingPlayer((prev) => ({
+                ...prev!,
+                lastName: e.target.value,
+              }))
+            }
+            required
+          />
+        </div>
+      </div>
+      <div className="form-row">
+        <div className="form-group">
+          <label>Gender</label>
+          <select
+            value={editingPlayer?.gender || 'male'}
+            onChange={(e) =>
+              setEditingPlayer((prev) => ({
+                ...prev!,
+                gender: e.target.value as 'male' | 'female' | 'other',
+              }))
+            }
+            required
+          >
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <div className="form-group">
+          <label>Position</label>
+          <input
+            type="text"
+            value={editingPlayer?.position || ''}
+            onChange={(e) =>
+              setEditingPlayer((prev) => ({
+                ...prev!,
+                position: e.target.value,
+              }))
+            }
+            required
+          />
+        </div>
+      </div>
+      <div className="form-row">
+        <div className="form-group">
+          <label>Age</label>
+          <input
+            type="number"
+            value={editingPlayer?.age || ''}
+            onChange={(e) =>
+              setEditingPlayer((prev) => ({
+                ...prev!,
+                age: parseInt(e.target.value),
+              }))
+            }
+          />
+        </div>
+        <div className="form-group">
+          <label>Email</label>
+          <input
+            type="email"
+            value={editingPlayer?.email || ''}
+            onChange={(e) =>
+              setEditingPlayer((prev) => ({
+                ...prev!,
+                email: e.target.value,
+              }))
+            }
+          />
+        </div>
+      </div>
+      <div className="form-group">
+        <label>Phone</label>
+        <input
+          type="tel"
+          value={editingPlayer?.phone || ''}
+          onChange={(e) =>
+            setEditingPlayer((prev) => ({
+              ...prev!,
+              phone: e.target.value,
+            }))
+          }
+        />
+      </div>
+      <div className="form-actions">
+        <button type="submit" className="save-button">
+          {isCreatingPlayer ? 'Create' : 'Save'}
+        </button>
+        <button
+          type="button"
+          className="cancel-button"
+          onClick={() => {
+            setEditingPlayer(null);
+            setIsCreatingPlayer(false);
+          }}
+        >
+          Cancel
+        </button>
+      </div>
+    </form>
+  );
+
+  const renderTeamForm = () => (
+    <form className="edit-form" onSubmit={handleTeamSubmit}>
+      <h4>{isCreatingTeam ? 'Create Team' : 'Edit Team'}</h4>
+      <div className="form-group">
+        <label>Team Name</label>
+        <input
+          type="text"
+          value={editingTeam?.name || ''}
+          onChange={(e) =>
+            setEditingTeam((prev) => ({
+              ...prev!,
+              name: e.target.value,
+            }))
+          }
+          required
+        />
+      </div>
+      <div className="form-group">
+        <label>Max Players</label>
+        <input
+          type="number"
+          value={editingTeam?.maxPlayers || 12}
+          onChange={(e) =>
+            setEditingTeam((prev) => ({
+              ...prev!,
+              maxPlayers: parseInt(e.target.value),
+            }))
+          }
+          min="1"
+          required
+        />
+      </div>
+      <div className="form-actions">
+        <button type="submit" className="save-button">
+          {isCreatingTeam ? 'Create' : 'Save'}
+        </button>
+        <button
+          type="button"
+          className="cancel-button"
+          onClick={() => {
+            setEditingTeam(null);
+            setIsCreatingTeam(false);
+          }}
+        >
+          Cancel
+        </button>
+      </div>
+    </form>
+  );
+
+  const renderTeamList = () => (
+    <div className="teams-list">
+      {teams.map((team) => (
+        <div key={team.id} className="team-card">
+          <div className="team-info">
+            <h4>{team.name}</h4>
+            <p>Max Players: {team.maxPlayers}</p>
+            <p>Current Players: {team.players.length}</p>
+            <p>Staff Members: {team.staff.length}</p>
+          </div>
+          <div className="team-actions">
+            <button
+              className="edit-button"
+              onClick={() => setEditingTeam(team)}
+            >
+              Edit
+            </button>
+            <button
+              className="delete-button"
+              onClick={() => onTeamDelete(team.id)}
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+
+  const renderStaffForm = () => (
+    <form className="edit-form" onSubmit={handleStaffSubmit}>
+      <h4>{isCreatingStaff ? 'Add Staff Member' : 'Edit Staff Member'}</h4>
+      <div className="form-group">
+        <label>Name</label>
+        <input
+          type="text"
+          value={editingStaff?.name || ''}
+          onChange={(e) =>
+            setEditingStaff((prev) => ({
+              ...prev!,
+              name: e.target.value,
+            }))
+          }
+          required
+        />
+      </div>
+      <div className="form-group">
+        <label>Role</label>
+        <select
+          value={editingStaff?.role || 'coach'}
+          onChange={(e) =>
+            setEditingStaff((prev) => ({
+              ...prev!,
+              role: e.target.value,
+            }))
+          }
+          required
+        >
+          <option value="coach">Coach</option>
+          <option value="assistant">Assistant</option>
+          <option value="manager">Manager</option>
+          <option value="trainer">Trainer</option>
+        </select>
+      </div>
+      <div className="form-group">
+        <label>Team</label>
+        <select
+          value={editingStaff?.teamId || ''}
+          onChange={(e) =>
+            setEditingStaff((prev) => ({
+              ...prev!,
+              teamId: e.target.value || undefined,
+            }))
+          }
+        >
+          <option value="">No Team Assigned</option>
+          {teams.map((team) => (
+            <option key={team.id} value={team.id}>
+              {team.name}
+            </option>
+          ))}
+        </select>
+      </div>
+      <div className="form-actions">
+        <button type="submit" className="save-button">
+          {isCreatingStaff ? 'Add Staff' : 'Save Changes'}
+        </button>
+        <button
+          type="button"
+          className="cancel-button"
+          onClick={() => {
+            setEditingStaff(null);
+            setIsCreatingStaff(false);
+          }}
+        >
+          Cancel
+        </button>
+      </div>
+    </form>
+  );
+
+  const renderStaffList = () => (
+    <div className="staff-list">
+      {staff.map((staffMember) => (
+        <div key={staffMember.id} className="staff-card">
+          <div className="staff-info">
+            <h4>{staffMember.name}</h4>
+            <p>Role: {staffMember.role}</p>
+            {staffMember.teamId && (
+              <p>
+                Team:{' '}
+                {teams.find((t) => t.id === staffMember.teamId)?.name}
+              </p>
+            )}
+          </div>
+          <div className="staff-actions">
+            <button
+              className="edit-button"
+              onClick={() => setEditingStaff(staffMember)}
+            >
+              Edit
+            </button>
+            <button
+              className="delete-button"
+              onClick={() => onStaffDelete(staffMember.id)}
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+
+  const renderSeasonForm = () => (
+    <form className="edit-form" onSubmit={handleSeasonSubmit}>
+      <h4>{isCreatingSeason ? 'Create Season' : 'Edit Season'}</h4>
+      <div className="form-group">
+        <label>Season Name</label>
+        <input
+          type="text"
+          value={editingSeason?.name || ''}
+          onChange={(e) =>
+            setEditingSeason((prev) => ({
+              ...prev!,
+              name: e.target.value,
+            }))
+          }
+          required
+        />
+      </div>
+      <div className="form-row">
+        <div className="form-group">
+          <label>Start Date</label>
+          <input
+            type="date"
+            value={editingSeason?.startDate || ''}
+            onChange={(e) =>
+              setEditingSeason((prev) => ({
+                ...prev!,
+                startDate: e.target.value,
+              }))
+            }
+            required
+          />
+        </div>
+        <div className="form-group">
+          <label>End Date</label>
+          <input
+            type="date"
+            value={editingSeason?.endDate || ''}
+            onChange={(e) =>
+              setEditingSeason((prev) => ({
+                ...prev!,
+                endDate: e.target.value,
+              }))
+            }
+            required
+          />
+        </div>
+      </div>
+      <div className="form-group">
+        <label>Status</label>
+        <select
+          value={editingSeason?.isActive ? 'active' : 'inactive'}
+          onChange={(e) =>
+            setEditingSeason((prev) => ({
+              ...prev!,
+              isActive: e.target.value === 'active',
+            }))
+          }
+          required
+        >
+          <option value="active">Active</option>
+          <option value="inactive">Inactive</option>
+        </select>
+      </div>
+      <div className="form-actions">
+        <button type="submit" className="save-button">
+          {isCreatingSeason ? 'Create Season' : 'Save Changes'}
+        </button>
+        <button
+          type="button"
+          className="cancel-button"
+          onClick={() => {
+            setEditingSeason(null);
+            setIsCreatingSeason(false);
+          }}
+        >
+          Cancel
+        </button>
+      </div>
+    </form>
+  );
+
+  const renderSeasonList = () => (
+    <div className="seasons-list">
+      {seasons.map((season) => (
+        <div key={season.id} className="season-card">
+          <div className="season-info">
+            <h4>{season.name}</h4>
+            <p>Status: {season.isActive ? 'Active' : 'Inactive'}</p>
+            <p>
+              Dates: {new Date(season.startDate).toLocaleDateString()} -{' '}
+              {new Date(season.endDate).toLocaleDateString()}
+            </p>
+          </div>
+          <div className="season-actions">
+            <button
+              className="edit-button"
+              onClick={() => setEditingSeason(season)}
+            >
+              Edit
+            </button>
+            <button
+              className="delete-button"
+              onClick={() => onSeasonDelete(season.id)}
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+
+  const renderScenarioForm = () => (
+    <form className="edit-form" onSubmit={handleScenarioSubmit}>
+      <h4>{isCreatingScenario ? 'Create Scenario' : 'Edit Scenario'}</h4>
+      <div className="form-group">
+        <label>Name</label>
+        <input
+          type="text"
+          value={editingScenario?.name || ''}
+          onChange={(e) =>
+            setEditingScenario((prev) =>
+              prev
+                ? {
+                    ...prev,
+                    name: e.target.value,
+                  }
+                : null
+            )
+          }
+          required
+        />
+      </div>
+      <div className="form-group">
+        <label>Status</label>
+        <select
+          value={editingScenario?.status || 'draft'}
+          onChange={(e) =>
+            setEditingScenario((prev) =>
+              prev
+                ? {
+                    ...prev,
+                    status: e.target.value as 'draft' | 'active' | 'archived',
+                  }
+                : null
+            )
+          }
+        >
+          <option value="draft">Draft</option>
+          <option value="active">Active</option>
+          <option value="archived">Archived</option>
+        </select>
+      </div>
+      <div className="form-group">
+        <label>Team Assignments</label>
+        {editingScenario?.teamAssignments.map((assignment, index) => (
+          <div key={index} className="team-assignment-row">
+            <select
+              value={assignment.teamId}
+              onChange={(e) =>
+                setEditingScenario((prev) =>
+                  prev
+                    ? {
+                        ...prev,
+                        teamAssignments: prev.teamAssignments.map((t, i) =>
+                          i === index
+                            ? { ...t, teamId: e.target.value }
+                            : t
+                        ),
+                      }
+                    : null
+                )
+              }
+            >
+              <option value="">Select a team</option>
+              {teams.map((team) => (
+                <option key={team.id} value={team.id}>
+                  {team.name}
+                </option>
+              ))}
+            </select>
+            <div className="player-selection">
+              {players.map((player) => (
+                <label key={player.id} className="player-checkbox">
+                  <input
+                    type="checkbox"
+                    checked={assignment.players.includes(player.id)}
+                    onChange={(e) =>
+                      setEditingScenario((prev) =>
+                        prev
+                          ? {
+                              ...prev,
+                              teamAssignments: prev.teamAssignments.map((t, i) =>
+                                i === index
+                                  ? {
+                                      ...t,
+                                      players: e.target.checked
+                                        ? [...t.players, player.id]
+                                        : t.players.filter(
+                                            (id) => id !== player.id
+                                          ),
+                                    }
+                                  : t
+                              ),
+                            }
+                          : null
+                      )
+                    }
+                  />
+                  {player.firstName} {player.lastName}
+                </label>
+              ))}
+            </div>
+            <div className="staff-selection">
+              {staff.map((staffMember) => (
+                <label key={staffMember.id} className="staff-checkbox">
+                  <input
+                    type="checkbox"
+                    checked={assignment.staff.includes(staffMember.id)}
+                    onChange={(e) =>
+                      setEditingScenario((prev) =>
+                        prev
+                          ? {
+                              ...prev,
+                              teamAssignments: prev.teamAssignments.map((t, i) =>
+                                i === index
+                                  ? {
+                                      ...t,
+                                      staff: e.target.checked
+                                        ? [...t.staff, staffMember.id]
+                                        : t.staff.filter(
+                                            (id) => id !== staffMember.id
+                                          ),
+                                    }
+                                  : t
+                              ),
+                            }
+                          : null
+                      )
+                    }
+                  />
+                  {staffMember.name}
+                </label>
+              ))}
+            </div>
+          </div>
+        ))}
+        <button
+          type="button"
+          className="add-button"
+          onClick={() =>
+            setEditingScenario((prev) =>
+              prev
+                ? {
+                    ...prev,
+                    teamAssignments: [
+                      ...prev.teamAssignments,
+                      { teamId: '', players: [], staff: [] },
+                    ],
+                  }
+                : null
+            )
+          }
+        >
+          Add Team Assignment
+        </button>
+      </div>
+      <div className="form-actions">
+        <button type="submit" className="save-button">
+          {isCreatingScenario ? 'Create Scenario' : 'Save Changes'}
+        </button>
+        <button
+          type="button"
+          className="cancel-button"
+          onClick={() => {
+            setEditingScenario(null);
+            setIsCreatingScenario(false);
+          }}
+        >
+          Cancel
+        </button>
+      </div>
+    </form>
+  );
+
   return (
     <div className="tc-dashboard">
       <div className="tc-header">
@@ -406,128 +1054,15 @@ function TCDashboard({
               <h3>Teams Management</h3>
               <button
                 className="create-button"
-                onClick={() => {
-                  setIsCreatingTeam(true);
-                  setEditingTeam({
-                    id: '',
-                    name: '',
-                    maxPlayers: 12,
-                    minAge: 8,
-                    maxAge: 10,
-                  });
-                }}
+                onClick={handleCreateTeam}
               >
                 Create New Team
               </button>
             </div>
 
-            {(editingTeam || isCreatingTeam) && (
-              <form className="edit-form" onSubmit={handleTeamSubmit}>
-                <h4>{isCreatingTeam ? 'Create Team' : 'Edit Team'}</h4>
-                <div className="form-group">
-                  <label>Team Name</label>
-                  <input
-                    type="text"
-                    value={editingTeam?.name || ''}
-                    onChange={(e) =>
-                      setEditingTeam((prev) => ({
-                        ...prev!,
-                        name: e.target.value,
-                      }))
-                    }
-                    required
-                  />
-                </div>
-                <div className="form-group">
-                  <label>Max Players</label>
-                  <input
-                    type="number"
-                    value={editingTeam?.maxPlayers || 12}
-                    onChange={(e) =>
-                      setEditingTeam((prev) => ({
-                        ...prev!,
-                        maxPlayers: parseInt(e.target.value),
-                      }))
-                    }
-                    min="1"
-                    required
-                  />
-                </div>
-                <div className="form-row">
-                  <div className="form-group">
-                    <label>Min Age</label>
-                    <input
-                      type="number"
-                      value={editingTeam?.minAge || 8}
-                      onChange={(e) =>
-                        setEditingTeam((prev) => ({
-                          ...prev!,
-                          minAge: parseInt(e.target.value),
-                        }))
-                      }
-                      min="1"
-                      required
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label>Max Age</label>
-                    <input
-                      type="number"
-                      value={editingTeam?.maxAge || 10}
-                      onChange={(e) =>
-                        setEditingTeam((prev) => ({
-                          ...prev!,
-                          maxAge: parseInt(e.target.value),
-                        }))
-                      }
-                      min="1"
-                      required
-                    />
-                  </div>
-                </div>
-                <div className="form-actions">
-                  <button type="submit" className="save-button">
-                    {isCreatingTeam ? 'Create' : 'Save'}
-                  </button>
-                  <button
-                    type="button"
-                    className="cancel-button"
-                    onClick={() => {
-                      setEditingTeam(null);
-                      setIsCreatingTeam(false);
-                    }}
-                  >
-                    Cancel
-                  </button>
-                </div>
-              </form>
-            )}
+            {(editingTeam || isCreatingTeam) && renderTeamForm()}
 
-            <div className="teams-list">
-              {teams.map((team) => (
-                <div key={team.id} className="team-card">
-                  <div className="team-info">
-                    <h4>{team.name}</h4>
-                    <p>Players: {team.maxPlayers}</p>
-                    <p>Ages: {team.minAge}-{team.maxAge}</p>
-                  </div>
-                  <div className="team-actions">
-                    <button
-                      className="edit-button"
-                      onClick={() => setEditingTeam(team)}
-                    >
-                      Edit
-                    </button>
-                    <button
-                      className="delete-button"
-                      onClick={() => onTeamDelete(team.id)}
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
+            {renderTeamList()}
           </div>
         ) : activeTab === 'players' ? (
           <div className="players-management">
@@ -552,116 +1087,7 @@ function TCDashboard({
               </button>
             </div>
 
-            {(editingPlayer || isCreatingPlayer) && (
-              <form className="edit-form" onSubmit={handlePlayerSubmit}>
-                <h4>{isCreatingPlayer ? 'Create Player' : 'Edit Player'}</h4>
-                <div className="form-row">
-                  <div className="form-group">
-                    <label>First Name</label>
-                    <input
-                      type="text"
-                      value={editingPlayer?.firstName || ''}
-                      onChange={(e) =>
-                        setEditingPlayer((prev) => ({
-                          ...prev!,
-                          firstName: e.target.value,
-                        }))
-                      }
-                      required
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label>Last Name</label>
-                    <input
-                      type="text"
-                      value={editingPlayer?.lastName || ''}
-                      onChange={(e) =>
-                        setEditingPlayer((prev) => ({
-                          ...prev!,
-                          lastName: e.target.value,
-                        }))
-                      }
-                      required
-                    />
-                  </div>
-                </div>
-                <div className="form-row">
-                  <div className="form-group">
-                    <label>Gender</label>
-                    <select
-                      value={editingPlayer?.gender || 'M'}
-                      onChange={(e) =>
-                        setEditingPlayer((prev) => ({
-                          ...prev!,
-                          gender: e.target.value as 'M' | 'F',
-                        }))
-                      }
-                      required
-                    >
-                      <option value="M">Male</option>
-                      <option value="F">Female</option>
-                    </select>
-                  </div>
-                  <div className="form-group">
-                    <label>Birth Date</label>
-                    <input
-                      type="date"
-                      value={editingPlayer?.birthDate || ''}
-                      onChange={(e) =>
-                        setEditingPlayer((prev) => ({
-                          ...prev!,
-                          birthDate: e.target.value,
-                        }))
-                      }
-                      required
-                    />
-                  </div>
-                </div>
-                <div className="form-group">
-                  <label>Status</label>
-                  <select
-                    value={editingPlayer?.status || 'active'}
-                    onChange={(e) =>
-                      setEditingPlayer((prev) => ({
-                        ...prev!,
-                        status: e.target.value as 'active' | 'inactive',
-                      }))
-                    }
-                    required
-                  >
-                    <option value="active">Active</option>
-                    <option value="inactive">Inactive</option>
-                  </select>
-                </div>
-                <div className="form-group">
-                  <label>Notes</label>
-                  <textarea
-                    value={editingPlayer?.notes || ''}
-                    onChange={(e) =>
-                      setEditingPlayer((prev) => ({
-                        ...prev!,
-                        notes: e.target.value,
-                      }))
-                    }
-                  />
-                </div>
-                <div className="form-actions">
-                  <button type="submit" className="save-button">
-                    {isCreatingPlayer ? 'Create' : 'Save'}
-                  </button>
-                  <button
-                    type="button"
-                    className="cancel-button"
-                    onClick={() => {
-                      setEditingPlayer(null);
-                      setIsCreatingPlayer(false);
-                    }}
-                  >
-                    Cancel
-                  </button>
-                </div>
-              </form>
-            )}
+            {(editingPlayer || isCreatingPlayer) && renderPlayerForm()}
 
             <div className="players-list">
               {players.map((player) => (
@@ -697,199 +1123,15 @@ function TCDashboard({
               <h3>Staff Management</h3>
               <button
                 className="create-button"
-                onClick={() => {
-                  setIsCreatingStaff(true);
-                  setEditingStaff({
-                    id: '',
-                    firstName: '',
-                    lastName: '',
-                    role: 'coach',
-                    email: '',
-                    phone: '',
-                    status: 'active',
-                    assignedTeams: [],
-                    qualifications: [],
-                  });
-                }}
+                onClick={handleCreateStaff}
               >
                 Add New Staff
               </button>
             </div>
 
-            {(editingStaff || isCreatingStaff) && (
-              <form className="edit-form" onSubmit={handleStaffSubmit}>
-                <h4>{isCreatingStaff ? 'Add Staff Member' : 'Edit Staff Member'}</h4>
-                <div className="form-row">
-                  <div className="form-group">
-                    <label>First Name</label>
-                    <input
-                      type="text"
-                      value={editingStaff?.firstName || ''}
-                      onChange={(e) =>
-                        setEditingStaff((prev) => ({
-                          ...prev!,
-                          firstName: e.target.value,
-                        }))
-                      }
-                      required
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label>Last Name</label>
-                    <input
-                      type="text"
-                      value={editingStaff?.lastName || ''}
-                      onChange={(e) =>
-                        setEditingStaff((prev) => ({
-                          ...prev!,
-                          lastName: e.target.value,
-                        }))
-                      }
-                      required
-                    />
-                  </div>
-                </div>
-                <div className="form-row">
-                  <div className="form-group">
-                    <label>Role</label>
-                    <select
-                      value={editingStaff?.role || 'coach'}
-                      onChange={(e) =>
-                        setEditingStaff((prev) => ({
-                          ...prev!,
-                          role: e.target.value as Staff['role'],
-                        }))
-                      }
-                      required
-                    >
-                      <option value="coach">Coach</option>
-                      <option value="assistant">Assistant</option>
-                      <option value="manager">Manager</option>
-                      <option value="trainer">Trainer</option>
-                    </select>
-                  </div>
-                  <div className="form-group">
-                    <label>Status</label>
-                    <select
-                      value={editingStaff?.status || 'active'}
-                      onChange={(e) =>
-                        setEditingStaff((prev) => ({
-                          ...prev!,
-                          status: e.target.value as 'active' | 'inactive',
-                        }))
-                      }
-                      required
-                    >
-                      <option value="active">Active</option>
-                      <option value="inactive">Inactive</option>
-                    </select>
-                  </div>
-                </div>
-                <div className="form-row">
-                  <div className="form-group">
-                    <label>Email</label>
-                    <input
-                      type="email"
-                      value={editingStaff?.email || ''}
-                      onChange={(e) =>
-                        setEditingStaff((prev) => ({
-                          ...prev!,
-                          email: e.target.value,
-                        }))
-                      }
-                      required
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label>Phone</label>
-                    <input
-                      type="tel"
-                      value={editingStaff?.phone || ''}
-                      onChange={(e) =>
-                        setEditingStaff((prev) => ({
-                          ...prev!,
-                          phone: e.target.value,
-                        }))
-                      }
-                      required
-                    />
-                  </div>
-                </div>
-                <div className="form-group">
-                  <label>Qualifications</label>
-                  <input
-                    type="text"
-                    value={editingStaff?.qualifications.join(', ') || ''}
-                    onChange={(e) =>
-                      setEditingStaff((prev) => ({
-                        ...prev!,
-                        qualifications: e.target.value.split(',').map(q => q.trim()),
-                      }))
-                    }
-                    placeholder="Enter qualifications separated by commas"
-                  />
-                </div>
-                <div className="form-group">
-                  <label>Notes</label>
-                  <textarea
-                    value={editingStaff?.notes || ''}
-                    onChange={(e) =>
-                      setEditingStaff((prev) => ({
-                        ...prev!,
-                        notes: e.target.value,
-                      }))
-                    }
-                  />
-                </div>
-                <div className="form-actions">
-                  <button type="submit" className="save-button">
-                    {isCreatingStaff ? 'Add Staff' : 'Save Changes'}
-                  </button>
-                  <button
-                    type="button"
-                    className="cancel-button"
-                    onClick={() => {
-                      setEditingStaff(null);
-                      setIsCreatingStaff(false);
-                    }}
-                  >
-                    Cancel
-                  </button>
-                </div>
-              </form>
-            )}
+            {(editingStaff || isCreatingStaff) && renderStaffForm()}
 
-            <div className="staff-list">
-              {staff.map((staffMember) => (
-                <div key={staffMember.id} className="staff-card">
-                  <div className="staff-info">
-                    <h4>{staffMember.firstName} {staffMember.lastName}</h4>
-                    <p>Role: {staffMember.role}</p>
-                    <p>Status: {staffMember.status}</p>
-                    <p>Email: {staffMember.email}</p>
-                    <p>Phone: {staffMember.phone}</p>
-                    {staffMember.qualifications.length > 0 && (
-                      <p>Qualifications: {staffMember.qualifications.join(', ')}</p>
-                    )}
-                    {staffMember.notes && <p>Notes: {staffMember.notes}</p>}
-                  </div>
-                  <div className="staff-actions">
-                    <button
-                      className="edit-button"
-                      onClick={() => setEditingStaff(staffMember)}
-                    >
-                      Edit
-                    </button>
-                    <button
-                      className="delete-button"
-                      onClick={() => onStaffDelete(staffMember.id)}
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
+            {renderStaffList()}
           </div>
         ) : activeTab === 'seasons' ? (
           <div className="seasons-management">
@@ -897,248 +1139,15 @@ function TCDashboard({
               <h3>Season Management</h3>
               <button
                 className="create-button"
-                onClick={() => {
-                  setIsCreatingSeason(true);
-                  setEditingSeason({
-                    id: '',
-                    name: '',
-                    startDate: new Date().toISOString().split('T')[0],
-                    endDate: new Date().toISOString().split('T')[0],
-                    status: 'upcoming',
-                    registrationDeadline: new Date().toISOString().split('T')[0],
-                    maxTeams: 10,
-                    ageGroups: [{ minAge: 8, maxAge: 10 }],
-                  });
-                }}
+                onClick={handleCreateSeason}
               >
                 Create New Season
               </button>
             </div>
 
-            {(editingSeason || isCreatingSeason) && (
-              <form className="edit-form" onSubmit={handleSeasonSubmit}>
-                <h4>{isCreatingSeason ? 'Create Season' : 'Edit Season'}</h4>
-                <div className="form-group">
-                  <label>Season Name</label>
-                  <input
-                    type="text"
-                    value={editingSeason?.name || ''}
-                    onChange={(e) =>
-                      setEditingSeason((prev) => ({
-                        ...prev!,
-                        name: e.target.value,
-                      }))
-                    }
-                    required
-                  />
-                </div>
-                <div className="form-row">
-                  <div className="form-group">
-                    <label>Start Date</label>
-                    <input
-                      type="date"
-                      value={editingSeason?.startDate || ''}
-                      onChange={(e) =>
-                        setEditingSeason((prev) => ({
-                          ...prev!,
-                          startDate: e.target.value,
-                        }))
-                      }
-                      required
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label>End Date</label>
-                    <input
-                      type="date"
-                      value={editingSeason?.endDate || ''}
-                      onChange={(e) =>
-                        setEditingSeason((prev) => ({
-                          ...prev!,
-                          endDate: e.target.value,
-                        }))
-                      }
-                      required
-                    />
-                  </div>
-                </div>
-                <div className="form-row">
-                  <div className="form-group">
-                    <label>Registration Deadline</label>
-                    <input
-                      type="date"
-                      value={editingSeason?.registrationDeadline || ''}
-                      onChange={(e) =>
-                        setEditingSeason((prev) => ({
-                          ...prev!,
-                          registrationDeadline: e.target.value,
-                        }))
-                      }
-                      required
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label>Max Teams</label>
-                    <input
-                      type="number"
-                      value={editingSeason?.maxTeams || 10}
-                      onChange={(e) =>
-                        setEditingSeason((prev) => ({
-                          ...prev!,
-                          maxTeams: parseInt(e.target.value),
-                        }))
-                      }
-                      min="1"
-                      required
-                    />
-                  </div>
-                </div>
-                <div className="form-group">
-                  <label>Status</label>
-                  <select
-                    value={editingSeason?.status || 'upcoming'}
-                    onChange={(e) =>
-                      setEditingSeason((prev) => ({
-                        ...prev!,
-                        status: e.target.value as Season['status'],
-                      }))
-                    }
-                    required
-                  >
-                    <option value="upcoming">Upcoming</option>
-                    <option value="active">Active</option>
-                    <option value="completed">Completed</option>
-                  </select>
-                </div>
-                <div className="form-group">
-                  <label>Age Groups</label>
-                  {editingSeason?.ageGroups.map((group, index) => (
-                    <div key={index} className="age-group-row">
-                      <input
-                        type="number"
-                        value={group.minAge}
-                        onChange={(e) => {
-                          const newAgeGroups = [...editingSeason.ageGroups];
-                          newAgeGroups[index] = {
-                            ...group,
-                            minAge: parseInt(e.target.value),
-                          };
-                          setEditingSeason((prev) => ({
-                            ...prev!,
-                            ageGroups: newAgeGroups,
-                          }));
-                        }}
-                        min="1"
-                        placeholder="Min Age"
-                      />
-                      <span>to</span>
-                      <input
-                        type="number"
-                        value={group.maxAge}
-                        onChange={(e) => {
-                          const newAgeGroups = [...editingSeason.ageGroups];
-                          newAgeGroups[index] = {
-                            ...group,
-                            maxAge: parseInt(e.target.value),
-                          };
-                          setEditingSeason((prev) => ({
-                            ...prev!,
-                            ageGroups: newAgeGroups,
-                          }));
-                        }}
-                        min="1"
-                        placeholder="Max Age"
-                      />
-                      <button
-                        type="button"
-                        className="remove-button"
-                        onClick={() => {
-                          const newAgeGroups = editingSeason.ageGroups.filter((_, i) => i !== index);
-                          setEditingSeason((prev) => ({
-                            ...prev!,
-                            ageGroups: newAgeGroups,
-                          }));
-                        }}
-                      >
-                        Remove
-                      </button>
-                    </div>
-                  ))}
-                  <button
-                    type="button"
-                    className="add-button"
-                    onClick={() => {
-                      setEditingSeason((prev) => ({
-                        ...prev!,
-                        ageGroups: [
-                          ...prev!.ageGroups,
-                          { minAge: 8, maxAge: 10 },
-                        ],
-                      }));
-                    }}
-                  >
-                    Add Age Group
-                  </button>
-                </div>
-                <div className="form-group">
-                  <label>Notes</label>
-                  <textarea
-                    value={editingSeason?.notes || ''}
-                    onChange={(e) =>
-                      setEditingSeason((prev) => ({
-                        ...prev!,
-                        notes: e.target.value,
-                      }))
-                    }
-                  />
-                </div>
-                <div className="form-actions">
-                  <button type="submit" className="save-button">
-                    {isCreatingSeason ? 'Create Season' : 'Save Changes'}
-                  </button>
-                  <button
-                    type="button"
-                    className="cancel-button"
-                    onClick={() => {
-                      setEditingSeason(null);
-                      setIsCreatingSeason(false);
-                    }}
-                  >
-                    Cancel
-                  </button>
-                </div>
-              </form>
-            )}
+            {(editingSeason || isCreatingSeason) && renderSeasonForm()}
 
-            <div className="seasons-list">
-              {seasons.map((season) => (
-                <div key={season.id} className="season-card">
-                  <div className="season-info">
-                    <h4>{season.name}</h4>
-                    <p>Status: {season.status}</p>
-                    <p>Dates: {new Date(season.startDate).toLocaleDateString()} - {new Date(season.endDate).toLocaleDateString()}</p>
-                    <p>Registration Deadline: {new Date(season.registrationDeadline).toLocaleDateString()}</p>
-                    <p>Max Teams: {season.maxTeams}</p>
-                    <p>Age Groups: {season.ageGroups.map(group => `${group.minAge}-${group.maxAge}`).join(', ')}</p>
-                    {season.notes && <p>Notes: {season.notes}</p>}
-                  </div>
-                  <div className="season-actions">
-                    <button
-                      className="edit-button"
-                      onClick={() => setEditingSeason(season)}
-                    >
-                      Edit
-                    </button>
-                    <button
-                      className="delete-button"
-                      onClick={() => onSeasonDelete(season.id)}
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
+            {renderSeasonList()}
           </div>
         ) : renderScenariosTab()}
       </div>
