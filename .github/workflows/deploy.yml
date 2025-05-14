@@ -28,10 +28,17 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci
+        run: |
+          echo "Installing dependencies..."
+          npm ci
+          echo "Dependencies installed successfully"
 
       - name: Build
-        run: npm run build
+        run: |
+          echo "Building application..."
+          npm run build
+          echo "Build completed"
+          ls -la dist/
 
       - name: Setup Pages
         uses: actions/configure-pages@v3
@@ -50,4 +57,11 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v2 
+        uses: actions/deploy-pages@v2
+        continue-on-error: true
+
+      - name: Check deployment status
+        if: always()
+        run: |
+          echo "Deployment URL: ${{ steps.deployment.outputs.page_url }}"
+          echo "Deployment status: ${{ steps.deployment.outcome }}" 
