@@ -2,6 +2,7 @@
   "name": "teambuilder",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://alaban-bs.github.io/Teambuilder",
   "description": "A comprehensive team assignment and management tool for sports organizations",
   "keywords": [
     "typescript",
@@ -34,11 +35,14 @@
   "devDependencies": {
     "@testing-library/dom": "^9.3.4",
     "@types/node": "^16.18.89",
+    "gh-pages": "^6.3.0",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
     "ts-jest": "^29.1.1"
   },
   "scripts": {
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "start": "react-scripts start",
     "build": "GENERATE_SOURCEMAP=false react-scripts build",
     "test": "react-scripts test",
