@@ -195,6 +195,20 @@ function TCDashboard({
     onScenarioCreate(newScenario);
   };
 
+  const handleCreatePlayer = () => {
+    setIsCreatingPlayer(true);
+    setEditingPlayer({
+      id: '',
+      firstName: '',
+      lastName: '',
+      gender: 'male',
+      position: '',
+      age: undefined,
+      email: '',
+      phone: '',
+    });
+  };
+
   const renderScenariosTab = () => (
     <div className="scenarios-section">
       <div className="section-header">
@@ -382,7 +396,7 @@ function TCDashboard({
                             ...prev,
                             teamAssignments: [
                               ...prev.teamAssignments,
-                              { teamId: '', players: [] },
+                              { teamId: '', players: [], staff: [] },
                             ],
                           }
                         : null
@@ -1070,18 +1084,7 @@ function TCDashboard({
               <h3>Players Management</h3>
               <button
                 className="create-button"
-                onClick={() => {
-                  setIsCreatingPlayer(true);
-                  setEditingPlayer({
-                    id: '',
-                    firstName: '',
-                    lastName: '',
-                    gender: 'M',
-                    birthDate: new Date().toISOString().split('T')[0],
-                    profileImage: null,
-                    status: 'active',
-                  });
-                }}
+                onClick={handleCreatePlayer}
               >
                 Create New Player
               </button>
@@ -1095,9 +1098,10 @@ function TCDashboard({
                   <div className="player-info">
                     <h4>{player.firstName} {player.lastName}</h4>
                     <p>Gender: {player.gender}</p>
-                    <p>Age: {new Date().getFullYear() - new Date(player.birthDate).getFullYear()}</p>
-                    <p>Status: {player.status}</p>
-                    {player.notes && <p>Notes: {player.notes}</p>}
+                    {player.age && <p>Age: {player.age}</p>}
+                    <p>Position: {player.position}</p>
+                    {player.email && <p>Email: {player.email}</p>}
+                    {player.phone && <p>Phone: {player.phone}</p>}
                   </div>
                   <div className="player-actions">
                     <button
