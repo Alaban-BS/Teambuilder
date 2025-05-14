@@ -1,0 +1,99 @@
+.team-column {
+  background: white;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 16px;
+  min-width: 300px;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  transition: all 0.2s ease;
+}
+
+.team-column.drop-target {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(var(--primary-color-rgb), 0.2);
+}
+
+.team-column.has-errors {
+  border-color: #ff4444;
+}
+
+.team-column.has-warnings {
+  border-color: #ffbb33;
+}
+
+.team-header {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.team-header h3 {
+  margin: 0;
+  font-size: 1.2em;
+  color: #333;
+}
+
+.team-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.capacity {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.capacity-bar {
+  height: 4px;
+  background: #f0f0f0;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.capacity-fill {
+  height: 100%;
+  background: var(--primary-color);
+  transition: width 0.3s ease;
+}
+
+.age-range {
+  font-size: 0.9em;
+  color: #666;
+}
+
+.validation-messages {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.validation-message {
+  padding: 8px;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+
+.validation-message.error {
+  background: #ffebee;
+  color: #d32f2f;
+}
+
+.validation-message.warning {
+  background: #fff3e0;
+  color: #f57c00;
+}
+
+.players-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 100px;
+  padding: 8px;
+  background: #fafafa;
+  border-radius: 4px;
+} 

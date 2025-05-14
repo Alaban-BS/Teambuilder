@@ -1,0 +1,14 @@
+[
+  {
+    "id": "s001",
+    "name": "Voorjaar 2025",
+    "status": "draft",
+    "teams": [
+      {
+        "teamId": "t01",
+        "players": ["p001"]
+      }
+    ],
+    "lastUpdated": "2024-03-15T10:30:00Z"
+  }
+] 

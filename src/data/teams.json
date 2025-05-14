@@ -1,0 +1,9 @@
+[
+  {
+    "id": "t01",
+    "name": "Team A",
+    "maxPlayers": 10,
+    "minAge": 10,
+    "maxAge": 13
+  }
+] 

@@ -1,0 +1,12 @@
+[
+  {
+    "id": "p001",
+    "firstName": "Sophie",
+    "lastName": "Janssen",
+    "gender": "F",
+    "birthDate": "2012-04-15",
+    "profileImage": null,
+    "notes": "Informatie ontbreekt",
+    "status": "active"
+  }
+] 
