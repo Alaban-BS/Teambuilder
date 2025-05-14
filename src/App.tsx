@@ -5,6 +5,7 @@ import { AppProvider } from './contexts/AppContext';
 import { LoginPage } from './components/auth/LoginPage';
 import { UnauthorizedPage } from './components/auth/UnauthorizedPage';
 import { ProtectedRoute } from './components/auth/ProtectedRoute';
+import { Header } from './components/common/Header';
 import TCDashboard from './components/TCDashboard';
 import { ToastContainer } from './components/common/Toast';
 import { ConfirmationDialog } from './components/common/ConfirmationDialog';
@@ -32,6 +33,7 @@ function App() {
       <AuthProvider>
         <AppProvider>
           <div className="app">
+            <Header />
             <Routes>
               <Route path="/login" element={<LoginPage />} />
               <Route path="/unauthorized" element={<UnauthorizedPage />} />
