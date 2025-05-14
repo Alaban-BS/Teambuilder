@@ -72,6 +72,8 @@ function TCDashboard({
         maxPlayers: editingTeam!.maxPlayers,
         players: [],
         staff: [],
+        minAge: editingTeam!.minAge,
+        maxAge: editingTeam!.maxAge,
       };
       onTeamCreate(newTeam);
       setIsCreatingTeam(false);
@@ -86,6 +88,8 @@ function TCDashboard({
       maxPlayers: 12,
       players: [],
       staff: [],
+      minAge: 0,
+      maxAge: 99,
     });
   };
 

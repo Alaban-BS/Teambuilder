@@ -13,14 +13,11 @@ export const validatePlayerAssignment = (
     };
   }
 
-  // Calculate player age
-  const playerAge = new Date().getFullYear() - new Date(player.birthDate).getFullYear();
-
-  // Check age requirements
-  if (playerAge < team.minAge || playerAge > team.maxAge) {
+  // Use player.age directly
+  if (typeof player.age === 'number' && (player.age < team.minAge || player.age > team.maxAge)) {
     return {
       status: 'error',
-      message: `Player age (${playerAge}) is outside team range (${team.minAge}-${team.maxAge})`,
+      message: `Player age (${player.age}) is outside team range (${team.minAge}-${team.maxAge})`,
     };
   }
 
@@ -36,7 +33,7 @@ export const validatePlayerAssignment = (
   const genderCount = currentPlayers.filter(p => p.gender === player.gender).length;
   if (genderCount > Math.ceil(team.maxPlayers / 2)) {
     return {
-      status: 'warning',
+      status: 'error',
       message: 'Team gender balance might be affected',
     };
   }
@@ -58,14 +55,8 @@ export const validateTeamComposition = (team: Team, players: Player[]): Validati
     });
   }
 
-  // Check age distribution
-  const ageDistribution = players.map(p => 
-    new Date().getFullYear() - new Date(p.birthDate).getFullYear()
-  );
-  
-  const invalidAges = ageDistribution.filter(age => 
-    age < team.minAge || age > team.maxAge
-  );
+  // Check age distribution using player.age
+  const invalidAges = players.filter(p => typeof p.age === 'number' && (p.age < team.minAge || p.age > team.maxAge));
 
   if (invalidAges.length > 0) {
     validations.push({
@@ -84,11 +75,11 @@ export const validateTeamComposition = (team: Team, players: Player[]): Validati
   Object.entries(genderCounts).forEach(([gender, count]) => {
     if (count > maxGenderCount) {
       validations.push({
-        status: 'warning',
-        message: `Too many ${gender === 'M' ? 'male' : 'female'} players (${count})`,
+        status: 'error',
+        message: `Too many ${gender} players (${count})`,
       });
     }
   });
 
   return validations;
-}; 
+};

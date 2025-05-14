@@ -83,3 +83,8 @@ export interface LoadingSpinnerProps {
   color?: string;
   overlay?: boolean;
 }
+
+export type ValidationResult = {
+  status: 'valid' | 'error';
+  message: string;
+};

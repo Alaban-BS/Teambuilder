@@ -1,6 +1,7 @@
-import { useState, useCallback } from 'react';
 import { DragEndEvent } from '@dnd-kit/core';
-import { Team, Player, TeamAssignment, ValidationResult } from '../types';
+import { useCallback, useState } from 'react';
+import { Player, Team } from '../types';
+import { ValidationResult } from '../types/index';
 
 interface TeamAssignmentState {
   [teamId: string]: string[];
@@ -11,11 +12,11 @@ export const useTeamAssignment = (teams: Team[]) => {
 
   const handleDragEnd = useCallback((event: DragEndEvent) => {
     const { active, over } = event;
-    
+
     if (over && active.id !== over.id) {
       const playerId = active.id as string;
       const teamId = over.id as string;
-      
+
       setAssignments(prev => {
         const newAssignments = { ...prev };
         // Remove player from any existing team
@@ -41,11 +42,10 @@ export const useTeamAssignment = (teams: Team[]) => {
       };
     }
 
-    const playerAge = calculateAge(player.birthDate);
-    if (playerAge < team.minAge || playerAge > team.maxAge) {
+    if (player.age && (player.age < team.minAge || player.age > team.maxAge)) {
       return {
         status: 'error',
-        message: `Player age (${playerAge}) is outside team's age range (${team.minAge}-${team.maxAge})`,
+        message: `Player age (${player.age}) is outside team's age range (${team.minAge}-${team.maxAge})`,
       };
     }
 
@@ -91,12 +91,11 @@ export const useTeamAssignment = (teams: Team[]) => {
     // Check age requirements
     teamPlayers.forEach(playerId => {
       const player = allPlayers.find(p => p.id === playerId);
-      if (player) {
-        const age = calculateAge(player.birthDate);
-        if (age < team.minAge || age > team.maxAge) {
+      if (player && player.age) {
+        if (player.age < team.minAge || player.age > team.maxAge) {
           validations.push({
             status: 'error',
-            message: `${player.firstName} ${player.lastName} (age ${age}) is outside team's age range (${team.minAge}-${team.maxAge})`,
+            message: `${player.firstName} ${player.lastName} (age ${player.age}) is outside team's age range (${team.minAge}-${team.maxAge})`,
           });
         }
       }
@@ -119,10 +118,10 @@ function calculateAge(birthDate: string): number {
   const birth = new Date(birthDate);
   let age = today.getFullYear() - birth.getFullYear();
   const monthDiff = today.getMonth() - birth.getMonth();
-  
+
   if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
     age--;
   }
-  
+
   return age;
-} 
+}
