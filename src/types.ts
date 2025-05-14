@@ -4,6 +4,8 @@ export interface Team {
   maxPlayers: number;
   players: string[];
   staff: string[];
+  minAge: number;
+  maxAge: number;
 }
 
 export interface Player {

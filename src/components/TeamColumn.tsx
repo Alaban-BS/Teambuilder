@@ -1,8 +1,9 @@
-import React from 'react';
 import { useDroppable } from '@dnd-kit/core';
-import { Team, Player, ValidationResult } from '../types';
-import { PlayerCard } from './PlayerCard';
+import React from 'react';
 import '../styles/TeamColumn.css';
+import { Player, Team } from '../types';
+import { ValidationResult } from '../types/index';
+import { PlayerCard } from './PlayerCard';
 
 interface TeamColumnProps {
   team: Team;
@@ -78,4 +79,4 @@ export const TeamColumn: React.FC<TeamColumnProps> = ({
       </div>
     </div>
   );
-}; 
+};
