@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Team, Player, Staff, Season, Scenario } from '../types';
 import '../styles/TCDashboard.css';
+import { Player, Scenario, Season, Staff, Team } from '../types';
 
 interface TCDashboardProps {
   teams: Team[];
@@ -127,7 +127,7 @@ function TCDashboard({
       onScenarioCreate({
         name: editingScenario!.name,
         status: editingScenario!.status,
-        teams: editingScenario!.teams,
+        teamAssignments: editingScenario!.teamAssignments,
       });
       setIsCreatingScenario(false);
     }
@@ -137,9 +137,10 @@ function TCDashboard({
     const newScenario: Omit<Scenario, 'id' | 'lastUpdated' | 'createdBy'> = {
       name: `${scenario.name} (Copy)`,
       status: 'draft',
-      teams: scenario.teams.map(team => ({
-        teamId: team.teamId,
-        playerIds: [...team.playerIds]
+      teamAssignments: scenario.teamAssignments.map(assignment => ({
+        teamId: assignment.teamId,
+        players: [...assignment.players],
+        staff: [...assignment.staff]
       }))
     };
     onScenarioCreate(newScenario);
@@ -165,13 +166,13 @@ function TCDashboard({
               <p>Status: {scenario.status}</p>
               <p>Last Updated: {new Date(scenario.lastUpdated).toLocaleDateString()}</p>
               <div className="scenario-teams">
-                {scenario.teams.map((teamAssignment) => {
-                  const team = teams.find((t) => t.id === teamAssignment.teamId);
+                {scenario.teamAssignments.map((assignment) => {
+                  const team = teams.find((t) => t.id === assignment.teamId);
                   return (
-                    <div key={teamAssignment.teamId} className="scenario-team">
+                    <div key={assignment.teamId} className="scenario-team">
                       <h5>{team?.name}</h5>
                       <p>
-                        {teamAssignment.playerIds.length} players assigned
+                        {assignment.players.length} players assigned
                       </p>
                     </div>
                   );
@@ -251,16 +252,16 @@ function TCDashboard({
 
               <div className="form-group">
                 <label>Team Assignments</label>
-                {editingScenario?.teams.map((teamAssignment, index) => (
+                {editingScenario?.teamAssignments.map((assignment, index) => (
                   <div key={index} className="team-assignment-row">
                     <select
-                      value={teamAssignment.teamId}
+                      value={assignment.teamId}
                       onChange={(e) =>
                         setEditingScenario((prev) =>
                           prev
                             ? {
                                 ...prev,
-                                teams: prev.teams.map((t, i) =>
+                                teamAssignments: prev.teamAssignments.map((t, i) =>
                                   i === index
                                     ? { ...t, teamId: e.target.value }
                                     : t
@@ -286,7 +287,7 @@ function TCDashboard({
                         >
                           <input
                             type="checkbox"
-                            checked={teamAssignment.playerIds.includes(
+                            checked={assignment.players.includes(
                               player.id
                             )}
                             onChange={(e) =>
@@ -294,13 +295,13 @@ function TCDashboard({
                                 prev
                                   ? {
                                       ...prev,
-                                      teams: prev.teams.map((t, i) =>
+                                      teamAssignments: prev.teamAssignments.map((t, i) =>
                                         i === index
                                           ? {
                                               ...t,
-                                              playerIds: e.target.checked
-                                                ? [...t.playerIds, player.id]
-                                                : t.playerIds.filter(
+                                              players: e.target.checked
+                                                ? [...t.players, player.id]
+                                                : t.players.filter(
                                                     (id) => id !== player.id
                                                   ),
                                             }
@@ -325,9 +326,9 @@ function TCDashboard({
                       prev
                         ? {
                             ...prev,
-                            teams: [
-                              ...prev.teams,
-                              { teamId: '', playerIds: [] },
+                            teamAssignments: [
+                              ...prev.teamAssignments,
+                              { teamId: '', players: [] },
                             ],
                           }
                         : null
@@ -1145,4 +1146,4 @@ function TCDashboard({
   );
 }
 
-export default TCDashboard; 
+export default TCDashboard;
