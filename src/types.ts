@@ -8,9 +8,14 @@ export interface Team {
 
 export interface Player {
   id: string;
-  name: string;
+  firstName: string;
+  lastName: string;
+  gender: 'male' | 'female' | 'other';
   position: string;
   teamId?: string;
+  age?: number;
+  email?: string;
+  phone?: string;
 }
 
 export interface Staff {
@@ -75,4 +80,4 @@ export interface LoadingSpinnerProps {
   size?: 'small' | 'medium' | 'large';
   color?: string;
   overlay?: boolean;
-} 
+}

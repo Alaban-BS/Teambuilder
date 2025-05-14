@@ -1,7 +1,7 @@
-import React from 'react';
 import { useDraggable } from '@dnd-kit/core';
-import { Player } from '../types';
+import React from 'react';
 import '../styles/PlayerCard.css';
+import { Player } from '../types';
 
 interface PlayerCardProps {
   player: Player;
@@ -27,9 +27,8 @@ export const PlayerCard: React.FC<PlayerCardProps> = ({ player, onRemove }) => {
         </div>
         <div className="player-details">
           <span className="player-gender">{player.gender}</span>
-          <span className="player-age">
-            {new Date().getFullYear() - new Date(player.birthDate).getFullYear()} years
-          </span>
+          {player.age && <span className="player-age">{player.age} years</span>}
+          {player.position && <span className="player-position">{player.position}</span>}
         </div>
       </div>
       {onRemove && (
@@ -39,4 +38,4 @@ export const PlayerCard: React.FC<PlayerCardProps> = ({ player, onRemove }) => {
       )}
     </div>
   );
-}; 
+};
