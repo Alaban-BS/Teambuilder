@@ -2,7 +2,7 @@
   "name": "teambuilder",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://alaban-bs.github.io/Teambuilder",
+  "homepage": ".",
   "description": "A comprehensive team assignment and management tool for sports organizations",
   "keywords": [
     "typescript",
