@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/Teambuilder/static/css/main.188352ca.css",
+    "main.js": "/Teambuilder/static/js/main.1f2dac42.js",
+    "index.html": "/Teambuilder/index.html",
+    "main.188352ca.css.map": "/Teambuilder/static/css/main.188352ca.css.map",
+    "main.1f2dac42.js.map": "/Teambuilder/static/js/main.1f2dac42.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.188352ca.css",
+    "static/js/main.1f2dac42.js"
+  ]
+}
