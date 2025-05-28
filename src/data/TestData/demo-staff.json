@@ -1,0 +1,43 @@
+{
+  "staff": [
+    {
+      "id": "staff-1",
+      "firstName": "Bob",
+      "lastName": "Smith",
+      "name": "Bob Smith",
+      "role": "coach",
+      "email": "bob.smith@example.com",
+      "phone": "555-1111",
+      "status": "active",
+      "assignedTeams": ["team-1", "team-4"],
+      "qualifications": ["UEFA B"],
+      "notes": ""
+    },
+    {
+      "id": "staff-2",
+      "firstName": "Alice",
+      "lastName": "Johnson",
+      "name": "Alice Johnson",
+      "role": "manager",
+      "email": "alice.johnson@example.com",
+      "phone": "555-2222",
+      "status": "active",
+      "assignedTeams": ["team-2", "team-5"],
+      "qualifications": ["UEFA C"],
+      "notes": ""
+    },
+    {
+      "id": "staff-3",
+      "firstName": "Charlie",
+      "lastName": "Brown",
+      "name": "Charlie Brown",
+      "role": "coach",
+      "email": "charlie.brown@example.com",
+      "phone": "555-3333",
+      "status": "inactive",
+      "assignedTeams": ["team-3"],
+      "qualifications": ["UEFA D"],
+      "notes": ""
+    }
+  ]
+} 

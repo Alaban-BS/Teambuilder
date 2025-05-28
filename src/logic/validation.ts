@@ -1,46 +1,40 @@
-import { Player, Team, ValidationResult } from '../types';
+import { Player, Team, ValidationResult, ValidationStatus } from '../types/index';
 
-export const validatePlayerAssignment = (
-  player: Player,
-  team: Team,
-  currentPlayers: Player[]
-): ValidationResult => {
-  // Check team capacity
-  if (currentPlayers.length >= team.maxPlayers) {
+// Helper function to calculate age from birthDate
+const calculateAge = (birthDate: string): number => {
+  const today = new Date();
+  const birth = new Date(birthDate);
+  let age = today.getFullYear() - birth.getFullYear();
+  const monthDiff = today.getMonth() - birth.getMonth();
+  
+  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+    age--;
+  }
+  
+  return age;
+};
+
+export const validatePlayerAssignment = (player: Player, team: Team): ValidationResult => {
+  // Check if player is already assigned to a team
+  if (player.teamId) {
     return {
-      status: 'error',
-      message: 'Team is at maximum capacity',
+      status: 'error' as ValidationStatus,
+      message: 'Player is already assigned to a team'
     };
   }
 
-  // Use player.age directly
-  if (typeof player.age === 'number' && (player.age < team.minAge || player.age > team.maxAge)) {
+  // Calculate age from birthDate and validate against team's age range
+  const playerAge = calculateAge(player.birthDate);
+  if (playerAge < team.minAge || playerAge > team.maxAge) {
     return {
-      status: 'error',
-      message: `Player age (${player.age}) is outside team range (${team.minAge}-${team.maxAge})`,
-    };
-  }
-
-  // Check for duplicate assignment
-  if (currentPlayers.some(p => p.id === player.id)) {
-    return {
-      status: 'error',
-      message: 'Player is already assigned to this team',
-    };
-  }
-
-  // Check gender balance (if needed)
-  const genderCount = currentPlayers.filter(p => p.gender === player.gender).length;
-  if (genderCount > Math.ceil(team.maxPlayers / 2)) {
-    return {
-      status: 'error',
-      message: 'Team gender balance might be affected',
+      status: 'error' as ValidationStatus,
+      message: `Player age (${playerAge}) is outside team range (${team.minAge}-${team.maxAge})`
     };
   }
 
   return {
-    status: 'valid',
-    message: 'Assignment is valid',
+    status: 'success' as ValidationStatus,
+    message: 'Player assignment is valid'
   };
 };
 
@@ -50,18 +44,21 @@ export const validateTeamComposition = (team: Team, players: Player[]): Validati
   // Check total capacity
   if (players.length > team.maxPlayers) {
     validations.push({
-      status: 'error',
-      message: `Team exceeds maximum capacity (${players.length}/${team.maxPlayers})`,
+      status: 'error' as ValidationStatus,
+      message: `Team exceeds maximum capacity (${players.length}/${team.maxPlayers})`
     });
   }
 
-  // Check age distribution using player.age
-  const invalidAges = players.filter(p => typeof p.age === 'number' && (p.age < team.minAge || p.age > team.maxAge));
+  // Check age distribution using birthDate
+  const invalidAges = players.filter(p => {
+    const playerAge = calculateAge(p.birthDate);
+    return playerAge < team.minAge || playerAge > team.maxAge;
+  });
 
   if (invalidAges.length > 0) {
     validations.push({
-      status: 'error',
-      message: `${invalidAges.length} players have invalid ages`,
+      status: 'error' as ValidationStatus,
+      message: `${invalidAges.length} players have invalid ages`
     });
   }
 
@@ -75,8 +72,8 @@ export const validateTeamComposition = (team: Team, players: Player[]): Validati
   Object.entries(genderCounts).forEach(([gender, count]) => {
     if (count > maxGenderCount) {
       validations.push({
-        status: 'error',
-        message: `Too many ${gender} players (${count})`,
+        status: 'error' as ValidationStatus,
+        message: `Too many ${gender} players (${count})`
       });
     }
   });

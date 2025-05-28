@@ -1,133 +1,134 @@
-import { Player, Scenario, Season, Staff, Team, User } from '../types';
+import { Player, Scenario, Season, Staff, Team, User } from '../types/index';
 
 // Helper function to generate random number within range
-const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1)) + min;
+const randomNumber = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1)) + min;
 
-// Helper function to generate random name
-const generateName = () => {
-  const firstNames = ['James', 'John', 'Robert', 'Michael', 'William', 'David', 'Mary', 'Patricia', 'Jennifer', 'Linda', 'Elizabeth', 'Barbara', 'Susan', 'Jessica', 'Sarah', 'Margaret', 'Karen', 'Nancy', 'Lisa', 'Betty'];
-  const lastNames = ['Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Garcia', 'Miller', 'Davis', 'Rodriguez', 'Martinez', 'Hernandez', 'Lopez', 'Gonzalez', 'Wilson', 'Anderson', 'Thomas', 'Taylor', 'Moore', 'Jackson', 'Martin'];
-  return {
-    firstName: firstNames[randomInt(0, firstNames.length - 1)],
-    lastName: lastNames[randomInt(0, lastNames.length - 1)]
-  };
-};
-
-// Generate 200 players
-export const mockPlayers: Player[] = Array.from({ length: 200 }, (_, index) => {
-  const { firstName, lastName } = generateName();
-  const gender = Math.random() > 0.5 ? 'male' : 'female';
-  const positions = ['Forward', 'Midfielder', 'Defender', 'Goalkeeper'];
-  const position = positions[randomInt(0, positions.length - 1)];
-
-  return {
-    id: String(index + 1),
-    firstName,
-    lastName,
-    gender,
-    position,
-    teamId: undefined,
-    age: randomInt(16, 35),
-    email: `${firstName.toLowerCase()}.${lastName.toLowerCase()}@example.com`,
-    phone: `+1-${randomInt(200, 999)}-${randomInt(200, 999)}-${randomInt(1000, 9999)}`,
-  };
-});
-
-// Generate 10 standard teams
-export const mockTeams: Team[] = Array.from({ length: 10 }, (_, index) => ({
-  id: String(index + 1),
-  name: `Team ${String.fromCharCode(65 + index)}`, // A through J
-  maxPlayers: 20,
-  players: [],
-  staff: [],
-  minAge: 16,
-  maxAge: 35,
+// Mock Players
+export const mockPlayers: Player[] = Array.from({ length: 20 }, (_, i) => ({
+  id: `player-${i + 1}`,
+  firstName: `Player${i + 1}`,
+  lastName: `Last${i + 1}`,
+  name: `Player${i + 1} Last${i + 1}`,
+  gender: i % 2 === 0 ? 'male' : 'female',
+  birthDate: new Date(2000 - randomNumber(0, 10), randomNumber(0, 11), randomNumber(1, 28)).toISOString(),
+  profileImage: null,
+  status: 'active',
+  federationNumber: `FED${1000 + i}`,
+  position: ['Forward', 'Midfielder', 'Defender', 'Goalkeeper'][i % 4],
+  teamId: i < 10 ? `team-${Math.floor(i / 2) + 1}` : undefined,
+  age: randomNumber(18, 35),
+  email: `player${i + 1}@example.com`,
+  phone: `+1234567890${i}`,
+  notes: ''
 }));
 
-// Generate 20 staff members
-export const mockStaff: Staff[] = Array.from({ length: 20 }, (_, index) => {
-  const { firstName, lastName } = generateName();
-  const roles = ['Coach', 'Assistant Coach', 'Trainer', 'Manager', 'Physiotherapist'];
+// Mock Teams
+export const mockTeams: Team[] = Array.from({ length: 5 }, (_, i) => ({
+  id: `team-${i + 1}`,
+  name: `Team ${i + 1}`,
+  location: `City ${i + 1}`,
+  maxPlayers: 20,
+  minAge: 18,
+  maxAge: 35,
+  players: mockPlayers.filter(p => p.teamId === `team-${i + 1}`).map(p => p.id),
+  staff: []
+}));
 
-  return {
-    id: String(index + 1),
-    name: `${firstName} ${lastName}`,
-    role: roles[randomInt(0, roles.length - 1)],
-    teamId: undefined,
-  };
-});
+// Mock Staff
+export const mockStaff: Staff[] = Array.from({ length: 10 }, (_, i) => ({
+  id: `staff-${i + 1}`,
+  firstName: `Staff${i + 1}`,
+  lastName: `Last${i + 1}`,
+  name: `Staff${i + 1} Last${i + 1}`,
+  role: ['coach', 'manager', 'other'][i % 3] as 'coach' | 'manager' | 'other',
+  email: `staff${i + 1}@example.com`,
+  phone: `+1234567890${i}`,
+  status: 'active',
+  assignedTeams: [mockTeams[i % mockTeams.length].id],
+  qualifications: ['License A', 'License B'],
+  notes: ''
+}));
 
-// Generate 2 seasons
+// Mock Seasons
 export const mockSeasons: Season[] = [
   {
-    id: '1',
+    id: 'season-1',
     name: '2024 Spring Season',
     startDate: '2024-03-01',
     endDate: '2024-06-30',
+    status: 'upcoming',
+    registrationDeadline: '2024-02-15',
+    maxTeams: 8,
+    ageGroups: ['U18', 'U21', 'Senior'],
     isActive: true,
+    notes: ''
   },
   {
-    id: '2',
+    id: 'season-2',
     name: '2024 Fall Season',
     startDate: '2024-09-01',
     endDate: '2024-12-31',
+    status: 'upcoming',
+    registrationDeadline: '2024-08-15',
+    maxTeams: 8,
+    ageGroups: ['U18', 'U21', 'Senior'],
     isActive: false,
-  },
+    notes: ''
+  }
 ];
 
-// Generate scenarios for each season
+// Mock Scenarios
 export const mockScenarios: Scenario[] = [
   {
-    id: '1',
-    name: 'Spring Season Initial Assignment',
-    status: 'active',
+    id: 'scenario-1',
+    name: 'Spring Teams',
+    description: 'Initial team assignments for Spring 2024 season.',
+    status: 'draft',
+    seasonId: 'season-1',
     teamAssignments: mockTeams.map(team => ({
       teamId: team.id,
-      players: mockPlayers
-        .filter(p => !p.teamId)
-        .slice(0, 20)
-        .map(p => p.id),
-      staff: mockStaff
-        .filter(s => !s.teamId)
-        .slice(0, 2)
-        .map(s => s.id),
+      players: team.players,
+      staff: team.staff || []
     })),
     lastUpdated: new Date().toISOString(),
-    createdBy: '1', // admin user
+    createdBy: 'admin',
+    teams: mockTeams.map(team => team.id)
   },
   {
-    id: '2',
-    name: 'Fall Season Initial Assignment',
+    id: 'scenario-2',
+    name: 'Fall Teams',
+    description: 'Initial team assignments for Fall 2024 season.',
     status: 'draft',
+    seasonId: 'season-2',
     teamAssignments: mockTeams.map(team => ({
       teamId: team.id,
-      players: [],
-      staff: [],
+      players: team.players,
+      staff: team.staff || []
     })),
     lastUpdated: new Date().toISOString(),
-    createdBy: '1', // admin user
-  },
+    createdBy: 'admin',
+    teams: mockTeams.map(team => team.id)
+  }
 ];
 
-// Users (keeping the existing admin and tc users)
+// Mock Users
 export const mockUsers: User[] = [
   {
-    id: '1',
+    id: 'user-1',
     username: 'admin',
     email: 'admin@example.com',
-    role: 'admin',
+    role: 'admin'
   },
   {
-    id: '2',
-    username: 'user',
-    email: 'user@example.com',
-    role: 'tc',
+    id: 'user-2',
+    username: 'manager',
+    email: 'manager@example.com',
+    role: 'manager'
   },
-  // Add a coordinator user
   {
-    id: '3',
+    id: 'user-3',
     username: 'coordinator',
     email: 'coordinator@example.com',
-    role: 'coordinator',
-  },
+    role: 'coordinator'
+  }
 ];

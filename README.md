@@ -1,122 +1,111 @@
 # Teambuilder
 
-A React TypeScript application for managing teams, players, staff, seasons, and scenarios.
+A comprehensive team assignment and management tool built with React and TypeScript.
 
 ## Features
 
-- User authentication with role-based access control
-- Team management (create, read, update, delete)
-- Player management
-- Staff management
-- Season management
-- Scenario management with team assignments
-- Responsive design
-- Toast notifications
-- Confirmation dialogs
-- Loading states
-- Local storage persistence
-- Automated deployment with GitHub Actions
+### User Management
+- Role-based access control (Admin, Team Coordinator, Staff)
+- Secure authentication and authorization
+- User profile management
 
-## Prerequisites
+### Team Management
+- Create and manage teams with customizable settings
+- Set team size limits and age restrictions
+- Assign staff members to teams
+- Track team composition and statistics
 
+### Player Management
+- Comprehensive player profiles
+- Track player assignments across scenarios
+- Age and gender-based filtering
+- Contact information management
+
+### Season Management
+- Create and manage seasons with start/end dates
+- Set active/inactive status for seasons
+- Organize scenarios within seasons
+- Track season-specific team assignments
+
+### Scenario Management
+- Create multiple scenarios for each season
+- Duplicate existing scenarios
+- Track scenario status (draft, active, archived)
+- Manage team assignments within scenarios
+- Version control for team compositions
+
+### Staff Management
+- Assign staff members to teams
+- Role-based staff assignments (coach, assistant, manager, trainer)
+- Track staff availability and assignments
+
+## User Interface
+
+### Navigation
+- Clean and intuitive navigation between dashboard and configuration
+- Quick access to all management features
+- Responsive design for all screen sizes
+
+### Dashboard
+- Season selector for easy navigation between seasons
+- Overview of active scenarios
+- Quick actions for scenario management
+- Real-time updates for team assignments
+
+### Configuration Panel
+- Tabbed interface for managing teams, players, and seasons
+- Intuitive forms for data entry
+- Bulk management capabilities
+- Search and filter functionality
+
+### Team Assignment Interface
+- Drag-and-drop player assignment
+- Visual team composition overview
+- Age and gender distribution charts
+- Team capacity indicators
+- Real-time validation of assignments
+
+### Scenario Management
+- Create new scenarios with team templates
+- Duplicate existing scenarios
+- Track scenario status and history
+- Manage team assignments within scenarios
+- Version control for team compositions
+
+## Getting Started
+
+### Prerequisites
 - Node.js (v14 or higher)
-- npm (v6 or higher)
+- npm or yarn
 
-## Installation
-
-1. Clone the repository:
-```bash
-git clone https://github.com/Alaban-BS/Teambuilder.git
-cd teambuilder
-```
-
+### Installation
+1. Clone the repository
 2. Install dependencies:
-```bash
-npm install
-```
-
+   ```bash
+   npm install
+   ```
 3. Start the development server:
+   ```bash
+   npm start
+   ```
+
+### Development
+- Hot reloading enabled for quick development
+- TypeScript for type safety
+- ESLint for code quality
+- Prettier for code formatting
+
+### Building for Production
 ```bash
-npm start
+npm run build
 ```
-
-The application will be available at `http://localhost:3000`.
-
-## Deployment
-
-The application is automatically deployed to GitHub Pages when changes are pushed to the main branch. Visit the deployed site at: https://alaban-bs.github.io/Teambuilder
-
-## Project Structure
-
-```
-src/
-  ├── components/
-  │   ├── auth/
-  │   │   ├── LoginPage.tsx
-  │   │   ├── ProtectedRoute.tsx
-  │   │   └── UnauthorizedPage.tsx
-  │   ├── common/
-  │   │   ├── Toast.tsx
-  │   │   ├── ConfirmationDialog.tsx
-  │   │   └── LoadingSpinner.tsx
-  │   └── TCDashboard.tsx
-  ├── contexts/
-  │   ├── AuthContext.tsx
-  │   └── AppContext.tsx
-  ├── hooks/
-  │   ├── useLocalStorage.ts
-  │   ├── useDataTable.ts
-  │   └── useUndoRedo.ts
-  ├── styles/
-  │   ├── global.css
-  │   ├── LoginPage.css
-  │   ├── Toast.css
-  │   ├── ConfirmationDialog.css
-  │   └── LoadingSpinner.css
-  ├── types.ts
-  ├── utils/
-  │   └── helpers.ts
-  └── App.tsx
-```
-
-## Available Scripts
-
-- `npm start` - Runs the app in development mode
-- `npm test` - Launches the test runner
-- `npm run build` - Builds the app for production
-- `npm run eject` - Ejects from Create React App
-
-## User Roles
-
-- Admin: Full access to all features
-- TC (Team Coordinator): Can manage teams, players, staff, and scenarios
-- Coordinator: Can view teams and scenarios
-
-## Development
-
-### Adding New Features
-
-1. Create new components in the `src/components` directory
-2. Add new types in `src/types.ts`
-3. Create new styles in the `src/styles` directory
-4. Update the README.md with new features
-
-### Code Style
-
-- Use TypeScript for type safety
-- Follow React best practices
-- Use functional components with hooks
-- Implement proper error handling
-- Add loading states for async operations
-- Use CSS modules or styled-components for styling
 
 ## Contributing
-
 1. Fork the repository
-2. Create a new branch
-3. Make your changes
-4. Submit a pull request
+2. Create a feature branch
+3. Commit your changes
+4. Push to the branch
+5. Create a Pull Request
 
 ## License
-
 This project is licensed under the MIT License - see the LICENSE file for details.

@@ -1,11 +1,12 @@
 # Player Assignment Functionality
 
 ## Overview
-The player assignment system ensures that players can only be assigned to one team **within a scenario**. Assignments are not global: the player database contains only player information, and all team assignments are managed per scenario. When attempting to assign a player to a new team within a scenario while they are already assigned to another team in that scenario, a confirmation dialog will appear to confirm the move.
+The player assignment system ensures that players can only be assigned to one team **within a scenario**. Assignments are not global: the player database contains only player information, and all team assignments are managed per scenario and season. When attempting to assign a player to a new team within a scenario while they are already assigned to another team in that scenario, a confirmation dialog will appear to confirm the move.
 
-## Scenario-Specific Assignments
+## Season and Scenario-Specific Assignments
 - **Players are not assigned to teams globally.**
 - **All assignments are stored in the `teamAssignments` array of the active scenario.**
+- **Each scenario is associated with a specific season.**
 - **Within a scenario, a player can only be assigned to one team.**
 - The player database (`players`) is only for player info (name, age, etc.), not assignments.
 
@@ -28,7 +29,7 @@ A custom hook that manages the player assignment state and logic **for the curre
 
 **Parameters:**
 - `teamAssignments: TeamAssignment[]` - Array of team assignments for the current scenario
-- `onPlayerMove: (playerId: string, fromTeamId: string | undefined, toTeamId: string) => void` - Callback to handle the actual player move within the scenario
+- `setTeamAssignments: (assignments: TeamAssignment[] | ((prev: TeamAssignment[]) => TeamAssignment[])) => void` - Function to update team assignments
 
 **Returns:**
 - `isDialogOpen: boolean` - Whether the confirmation dialog is open
@@ -61,12 +62,14 @@ A custom hook that manages the player assignment state and logic **for the curre
 - All assignment logic operates on the `teamAssignments` array of the active scenario.
 - The player database is not modified for assignments.
 - The dialog and assignment logic are scenario-specific.
-- The dialog component is styled using Tailwind CSS for a consistent look and feel with the rest of the application.
+- Each scenario is tied to a specific season.
+- The dialog component is styled using CSS modules for a consistent look and feel with the rest of the application.
 
 ## Error Handling
 
 - If a player is not found, the move is cancelled
 - If a team is not found, the move is cancelled
+- If no season is selected, scenario creation is blocked
 - The dialog can be closed at any time without making changes
 
 ## Future Improvements
@@ -76,4 +79,6 @@ Potential enhancements could include:
 - Undo/redo functionality
 - Assignment history tracking
 - Team capacity limits
-- Assignment validation rules 
+- Assignment validation rules
+- Age and gender-based validation
+- Team composition analytics 

@@ -9,35 +9,25 @@ export const ConfirmationDialog: React.FC = () => {
   if (!isOpen) return null;
 
   const handleConfirm = () => {
-    if (onConfirm) {
-      onConfirm();
-    }
+    onConfirm();
     dispatch({ type: 'HIDE_CONFIRMATION_DIALOG' });
   };
 
   const handleCancel = () => {
-    if (onCancel) {
-      onCancel();
-    }
+    onCancel();
     dispatch({ type: 'HIDE_CONFIRMATION_DIALOG' });
   };
 
   return (
-    <div className="confirmation-dialog-overlay">
-      <div className="confirmation-dialog">
-        <h2>{title}</h2>
+    <div className="modal">
+      <div className="modal-content">
+        <h3>{title}</h3>
         <p>{message}</p>
-        <div className="confirmation-dialog-buttons">
-          <button
-            className="confirmation-dialog-button cancel"
-            onClick={handleCancel}
-          >
+        <div className="modal-actions">
+          <button className="cancel-button" onClick={handleCancel}>
             Cancel
           </button>
-          <button
-            className="confirmation-dialog-button confirm"
-            onClick={handleConfirm}
-          >
+          <button className="confirm-button" onClick={handleConfirm}>
             Confirm
           </button>
         </div>

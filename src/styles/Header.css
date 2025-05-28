@@ -1,63 +1,85 @@
-.app-header {
-  background-color: white;
-  padding: 1rem 2rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.header-content {
+.header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  max-width: 1200px;
-  margin: 0 auto;
+  padding: 1rem 2rem;
+  background-color: #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.header-title {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: var(--text-color);
+.header-left h1 {
   margin: 0;
+  font-size: 1.5rem;
+  color: #2d3748;
 }
 
-.header-actions {
+.header-right {
   display: flex;
   align-items: center;
   gap: 1rem;
 }
 
 .user-info {
-  color: var(--text-color-light);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  margin-right: 1rem;
+}
+
+.username {
+  font-weight: 600;
+  color: #2d3748;
+}
+
+.role {
   font-size: 0.875rem;
+  color: #718096;
+  text-transform: capitalize;
+}
+
+.config-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  background: none;
+  border: none;
+  border-radius: 0.375rem;
+  color: #4a5568;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.config-button:hover {
+  background-color: #f7fafc;
+  color: #2d3748;
+}
+
+.config-button svg {
+  width: 1.5rem;
+  height: 1.5rem;
 }
 
 .logout-button {
   padding: 0.5rem 1rem;
-  border: 1px solid var(--border-color);
-  border-radius: 4px;
-  background-color: white;
-  color: var(--text-color);
-  font-size: 0.875rem;
+  background-color: #e53e3e;
+  color: white;
+  border: none;
+  border-radius: 0.375rem;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background-color 0.2s;
 }
 
 .logout-button:hover {
-  background-color: var(--background-color);
-  border-color: var(--text-color-light);
+  background-color: #c53030;
 }
 
 @media (max-width: 768px) {
-  .app-header {
+  .header {
     padding: 1rem;
   }
 
-  .header-content {
-    flex-direction: column;
-    gap: 1rem;
-    text-align: center;
-  }
-
-  .header-actions {
+  .header-right {
     flex-direction: column;
     width: 100%;
   }

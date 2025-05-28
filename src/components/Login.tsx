@@ -1,112 +1,77 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDataMode } from '../contexts/DataModeContext';
-import { createApiService } from '../services/api';
+import { useAuth } from '../contexts/AuthContext';
+import { useApp } from '../contexts/AppContext';
+import { testTeams, testPlayers, testStaff, testSeasons, testScenarios } from '../data/TestData';
+import '../styles/Login.css';
 
-const Login: React.FC = () => {
+export const Login: React.FC = () => {
+  const [useSampleData, setUseSampleData] = useState(false);
+  const { login } = useAuth();
+  const { dispatch } = useApp();
   const navigate = useNavigate();
-  const { useMockData, toggleDataMode } = useDataMode();
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
-
+  const handleRoleLogin = async (role: 'admin' | 'manager' | 'coordinator') => {
     try {
-      const apiService = createApiService(useMockData);
-      const users = await apiService.getUsers();
-
-      // In a real app, you would validate the password here
-      const user = users.find(u => u.username === username);
-
-      if (user) {
-        // Store user info in localStorage or context
-        localStorage.setItem('currentUser', JSON.stringify(user));
-        navigate('/dashboard');
-      } else {
-        setError('Invalid username or password');
+      const user = await login(role);
+      if (useSampleData) {
+        dispatch({ type: 'SET_LOADING', payload: true });
+        // Load sample data
+        dispatch({ type: 'SET_TEAMS', payload: testTeams });
+        dispatch({ type: 'SET_PLAYERS', payload: testPlayers });
+        dispatch({ type: 'SET_STAFF', payload: testStaff });
+        dispatch({ type: 'SET_SEASONS', payload: testSeasons });
+        dispatch({ type: 'SET_SCENARIOS', payload: testScenarios });
+        dispatch({ type: 'SET_LOADING', payload: false });
       }
-    } catch (err) {
-      setError('An error occurred during login');
+      // Navigate to dashboard after successful login
+      navigate('/dashboard');
+    } catch (error) {
+      dispatch({
+        type: 'ADD_TOAST',
+        payload: {
+          id: Date.now().toString(),
+          type: 'error',
+          message: 'Login failed'
+        }
+      });
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Sign in to your account
-          </h2>
+    <div className="login-container">
+      <div className="login-form-container">
+        <h2>Select Role</h2>
+        <div className="role-buttons">
+          <button 
+            className="role-button admin" 
+            onClick={() => handleRoleLogin('admin')}
+          >
+            Login as Admin
+          </button>
+          <button 
+            className="role-button manager" 
+            onClick={() => handleRoleLogin('manager')}
+          >
+            Login as Manager
+          </button>
+          <button 
+            className="role-button coordinator" 
+            onClick={() => handleRoleLogin('coordinator')}
+          >
+            Login as Coordinator
+          </button>
         </div>
-        <form className="mt-8 space-y-6" onSubmit={handleLogin}>
-          <div className="rounded-md shadow-sm -space-y-px">
-            <div>
-              <label htmlFor="username" className="sr-only">
-                Username
-              </label>
-              <input
-                id="username"
-                name="username"
-                type="text"
-                required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-              />
-            </div>
-            <div>
-              <label htmlFor="password" className="sr-only">
-                Password
-              </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </div>
-          </div>
-
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <input
-                id="mock-data"
-                name="mock-data"
-                type="checkbox"
-                className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-                checked={useMockData}
-                onChange={toggleDataMode}
-              />
-              <label htmlFor="mock-data" className="ml-2 block text-sm text-gray-900">
-                Use Mock Data
-              </label>
-            </div>
-          </div>
-
-          {error && (
-            <div className="text-red-500 text-sm text-center">{error}</div>
-          )}
-
-          <div>
-            <button
-              type="submit"
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-            >
-              Sign in
-            </button>
-          </div>
-        </form>
+        <div className="form-group checkbox-group">
+          <input
+            type="checkbox"
+            id="useSampleData"
+            checked={useSampleData}
+            onChange={(e) => setUseSampleData(e.target.checked)}
+          />
+          <label htmlFor="useSampleData">Use Sample Data</label>
+        </div>
       </div>
     </div>
   );
 };
-
-export default Login;

@@ -1,7 +1,7 @@
 import { useDroppable } from '@dnd-kit/core';
 import React from 'react';
 import '../styles/TeamColumn.css';
-import { Player, Team } from '../types';
+import { Player, Team } from '../types/index';
 import { ValidationResult } from '../types/index';
 import { PlayerCard } from './PlayerCard';
 

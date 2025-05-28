@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Player, Team, TeamAssignment } from '../types';
+import { Player, Team, TeamAssignment } from '../types/index';
 
 interface UsePlayerAssignmentProps {
   teams: Team[];

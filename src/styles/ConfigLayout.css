@@ -1,0 +1,359 @@
+.config-layout {
+  width: 100%;
+  min-height: 100vh;
+  background-color: var(--background-color);
+  display: flex;
+  flex-direction: column;
+}
+
+.config-header {
+  background-color: white;
+  padding: 1.5rem 2rem;
+  box-shadow: var(--shadow);
+  margin-bottom: 2rem;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.header-content h1 {
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--text-color);
+  margin: 0;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.username {
+  font-size: 1rem;
+  color: var(--text-color);
+  font-weight: 500;
+}
+
+.logout-button {
+  padding: 0.75rem 1.5rem;
+  background-color: var(--error-color);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.logout-button:hover {
+  background-color: #dc2626;
+}
+
+.config-tabs {
+  display: flex;
+  gap: 1rem;
+  border-bottom: 2px solid var(--border-color);
+  padding-bottom: 0.5rem;
+}
+
+.config-tabs button {
+  background: none;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  color: var(--text-color-light);
+  cursor: pointer;
+  position: relative;
+  transition: color 0.2s;
+}
+
+.config-tabs button:hover {
+  color: var(--primary-color);
+}
+
+.config-tabs button.active {
+  color: var(--primary-color);
+  font-weight: 500;
+}
+
+.config-tabs button.active::after {
+  content: '';
+  position: absolute;
+  bottom: -0.5rem;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: var(--primary-color);
+}
+
+.config-content {
+  flex: 1;
+  padding: 0 2rem 2rem;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Management Sections */
+.management-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.management-header h3 {
+  font-size: 1.5rem;
+  color: var(--text-color);
+  margin: 0;
+}
+
+.create-button {
+  padding: 0.75rem 1.5rem;
+  background-color: var(--success-color);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.create-button:hover {
+  background-color: #218838;
+}
+
+/* Lists */
+.seasons-list,
+.teams-list,
+.players-list {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+}
+
+.season-card,
+.team-card,
+.player-card {
+  background-color: white;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: var(--shadow);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.season-card:hover,
+.team-card:hover,
+.player-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.season-info h4,
+.team-info h4,
+.player-info h4 {
+  font-size: 1.2rem;
+  color: var(--text-color);
+  margin: 0 0 0.75rem 0;
+}
+
+.season-info p,
+.team-info p,
+.player-info p {
+  color: var(--text-color-light);
+  margin: 0.25rem 0;
+  font-size: 0.875rem;
+}
+
+.season-actions,
+.team-actions,
+.player-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.edit-button,
+.delete-button {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-size: 0.875rem;
+}
+
+.edit-button {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.edit-button:hover {
+  background-color: var(--primary-color-dark);
+}
+
+.delete-button {
+  background-color: var(--error-color);
+  color: white;
+}
+
+.delete-button:hover {
+  background-color: #dc2626;
+}
+
+/* Modal */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 500px;
+  box-shadow: var(--shadow);
+}
+
+.modal-content h3 {
+  font-size: 1.5rem;
+  color: var(--text-color);
+  margin-bottom: 1.5rem;
+}
+
+.edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group label {
+  font-size: 0.875rem;
+  color: var(--text-color);
+  font-weight: 500;
+}
+
+.form-group input,
+.form-group select {
+  padding: 0.75rem;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  font-size: 1rem;
+  color: var(--text-color);
+  background-color: white;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+}
+
+.form-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.save-button,
+.cancel-button {
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.save-button {
+  background-color: var(--success-color);
+  color: white;
+  border: none;
+}
+
+.save-button:hover {
+  background-color: #218838;
+}
+
+.cancel-button {
+  background-color: white;
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+}
+
+.cancel-button:hover {
+  background-color: var(--background-color);
+}
+
+@media (max-width: 768px) {
+  .config-header {
+    padding: 1rem;
+  }
+
+  .header-content {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+  }
+
+  .user-info {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .config-tabs {
+    overflow-x: auto;
+    padding-bottom: 0;
+  }
+
+  .config-tabs button {
+    white-space: nowrap;
+  }
+
+  .config-content {
+    padding: 0 1rem 1rem;
+  }
+
+  .management-header {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+  }
+
+  .create-button {
+    width: 100%;
+  }
+
+  .seasons-list,
+  .teams-list,
+  .players-list {
+    grid-template-columns: 1fr;
+  }
+
+  .modal-content {
+    margin: 1rem;
+    padding: 1.5rem;
+  }
+} 

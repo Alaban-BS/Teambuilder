@@ -1,0 +1,33 @@
+{
+  "scenarios": [
+    {
+      "id": "scenario-1",
+      "name": "Spring Teams",
+      "description": "Initial team assignments for Spring 2024 season.",
+      "status": "draft",
+      "seasonId": "season-1",
+      "teamAssignments": [
+        { "teamId": "team-1", "players": ["player-1"], "staff": ["staff-1"] },
+        { "teamId": "team-2", "players": ["player-2"], "staff": ["staff-2"] }
+      ],
+      "lastUpdated": "2024-03-01T10:00:00Z",
+      "createdBy": "admin",
+      "teams": ["team-1", "team-2"]
+    },
+    {
+      "id": "scenario-2",
+      "name": "Fall Teams",
+      "description": "Initial team assignments for Fall 2024 season.",
+      "status": "draft",
+      "seasonId": "season-2",
+      "teamAssignments": [
+        { "teamId": "team-3", "players": ["player-3"], "staff": ["staff-3"] },
+        { "teamId": "team-4", "players": ["player-4"], "staff": ["staff-4"] },
+        { "teamId": "team-5", "players": ["player-5"], "staff": ["staff-5"] }
+      ],
+      "lastUpdated": "2024-09-01T10:00:00Z",
+      "createdBy": "admin",
+      "teams": ["team-3", "team-4", "team-5"]
+    }
+  ]
+} 

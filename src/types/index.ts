@@ -2,33 +2,43 @@ export interface Player {
   id: string;
   firstName: string;
   lastName: string;
-  gender: 'M' | 'F';
+  name: string;
+  gender: 'male' | 'female' | 'other';
   birthDate: string;
   profileImage: string | null;
   notes?: string;
   status: 'active' | 'inactive';
-  federationNumber?: string;
+  federationNumber: string;
+  teamId?: string;
 }
 
 export interface Team {
   id: string;
   name: string;
+  location: string;
   maxPlayers: number;
   minAge: number;
   maxAge: number;
+  players: string[];
+  staff: string[];
 }
 
 export interface TeamAssignment {
   teamId: string;
   players: string[];
+  staff: string[];
 }
 
 export interface Scenario {
   id: string;
   name: string;
+  description: string;
   status: 'draft' | 'final' | 'archived';
-  teams: TeamAssignment[];
+  seasonId: string;
+  teamAssignments: TeamAssignment[];
   lastUpdated: string;
+  createdBy: string;
+  teams: string[];
 }
 
 export interface StaffMember {
@@ -42,7 +52,8 @@ export interface Staff {
   id: string;
   firstName: string;
   lastName: string;
-  role: 'coach' | 'assistant' | 'manager' | 'trainer';
+  name: string;
+  role: 'coach' | 'manager' | 'other';
   email: string;
   phone: string;
   status: 'active' | 'inactive';
@@ -59,10 +70,8 @@ export interface Season {
   status: 'upcoming' | 'active' | 'completed';
   registrationDeadline: string;
   maxTeams: number;
-  ageGroups: {
-    minAge: number;
-    maxAge: number;
-  }[];
+  ageGroups: string[];
+  isActive: boolean;
   notes?: string;
 }
 
@@ -71,4 +80,24 @@ export type ValidationStatus = 'valid' | 'warning' | 'error';
 export interface ValidationResult {
   status: ValidationStatus;
   message: string;
+}
+
+export interface User {
+  id: string;
+  username: string;
+  email: string;
+  role: 'admin' | 'manager' | 'coordinator';
+}
+
+export interface LoadingSpinnerProps {
+  size?: 'small' | 'medium' | 'large';
+  color?: string;
+  className?: string;
+}
+
+export interface Toast {
+  id: string;
+  message: string;
+  type: 'success' | 'error' | 'warning' | 'info';
+  duration?: number;
 } 

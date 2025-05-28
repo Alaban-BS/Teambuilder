@@ -1,0 +1,308 @@
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-header {
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 1rem;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.app-content {
+  flex: 1;
+  padding: 2rem;
+  background-color: #f8f9fa;
+}
+
+.dashboard {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.dashboard-header h1 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.dashboard-header-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.dashboard-tabs {
+  display: flex;
+  gap: 1rem;
+  border-bottom: 2px solid #e2e8f0;
+  padding-bottom: 0.5rem;
+  margin-bottom: 2rem;
+}
+
+.dashboard-tabs button {
+  background: none;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  color: #4a5568;
+  cursor: pointer;
+  position: relative;
+  transition: color 0.2s;
+}
+
+.dashboard-tabs button:hover {
+  color: #2b6cb0;
+}
+
+.dashboard-tabs button.active {
+  color: #2b6cb0;
+  font-weight: 500;
+}
+
+.dashboard-tabs button.active::after {
+  content: '';
+  position: absolute;
+  bottom: -0.5rem;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: #2b6cb0;
+}
+
+.dashboard-content {
+  flex: 1;
+  padding: 0 2rem 2rem;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.season-selector {
+  margin-bottom: 2rem;
+}
+
+.season-selector select {
+  width: 100%;
+  max-width: 300px;
+  padding: 0.5rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.scenarios-section {
+  background: white;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.scenarios-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.scenarios-header h2 {
+  margin: 0;
+  font-size: 1.25rem;
+  color: #333;
+}
+
+.create-button {
+  background-color: #2b6cb0;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.create-button:hover {
+  background-color: #2c5282;
+}
+
+.scenarios-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.scenario-card {
+  background: #f8f9fa;
+  border-radius: 6px;
+  padding: 1rem;
+  border: 1px solid #e2e8f0;
+}
+
+.scenario-info h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1.1rem;
+  color: #333;
+}
+
+.scenario-info p {
+  margin: 0 0 0.5rem;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.scenario-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.edit-button,
+.delete-button {
+  padding: 0.25rem 0.5rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  transition: background-color 0.2s;
+}
+
+.edit-button {
+  background-color: #4299e1;
+  color: white;
+}
+
+.edit-button:hover {
+  background-color: #3182ce;
+}
+
+.delete-button {
+  background-color: #f56565;
+  color: white;
+}
+
+.delete-button:hover {
+  background-color: #e53e3e;
+}
+
+.config-button {
+  background-color: #4a5568;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.config-button:hover {
+  background-color: #2d3748;
+}
+
+.login-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 2rem;
+  background-color: #f8f9fa;
+}
+
+.login-form {
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+}
+
+.login-form h1 {
+  margin: 0 0 1.5rem;
+  text-align: center;
+  color: #333;
+}
+
+.login-form-group {
+  margin-bottom: 1rem;
+}
+
+.login-form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #4a5568;
+  font-weight: 500;
+}
+
+.login-form-group input {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.login-form-group input:focus {
+  outline: none;
+  border-color: #4299e1;
+  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+}
+
+.login-button {
+  width: 100%;
+  padding: 0.75rem;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  margin-bottom: 0.5rem;
+}
+
+.login-button.admin {
+  background-color: #2b6cb0;
+  color: white;
+}
+
+.login-button.admin:hover {
+  background-color: #2c5282;
+}
+
+.login-button.coordinator {
+  background-color: #48bb78;
+  color: white;
+}
+
+.login-button.coordinator:hover {
+  background-color: #38a169;
+}
+
+.login-button.manager {
+  background-color: #ed8936;
+  color: white;
+}
+
+.login-button.manager:hover {
+  background-color: #dd6b20;
+}
+
+.login-error {
+  color: #e53e3e;
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
+  text-align: center;
+} 

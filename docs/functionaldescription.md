@@ -6,11 +6,11 @@ This document outlines the full functional specification of the **Team Assignmen
 
 ### ✨ Key Objectives
 
-* Centralize player and staff assignments per season.
+* Centralize player and staff assignments per season and scenario.
 * Replace error-prone spreadsheets and chat-based workflows.
-* Provide intuitive drag-and-drop team creation.
-* Validate against rules like age range, unique roles, and federation checks.
-* Export scenarios and support multi-user collaboration.
+* Provide intuitive team management interface.
+* Validate against rules like age range, unique roles, and team capacity.
+* Support multi-user collaboration with role-based access.
 
 ---
 
@@ -30,71 +30,84 @@ This document outlines the full functional specification of the **Team Assignmen
 #### 1. Season Management
 
 * Create, edit, and archive seasons.
-* Define a **reference date** to compute exact player age with 2 decimals.
+* Set active/inactive status for seasons.
+* Track season-specific team assignments.
+* Organize scenarios within seasons.
 
 #### 2. Player & Staff Management
 
-* Add players manually or import from federation CSV (supports mixed membership).
-* Add staff members and roles.
-* Optional federation number field enables link with external control list.
+* Comprehensive player profiles with:
+  - Personal information
+  - Age and gender
+  - Position and contact details
+* Staff management with role-based assignments:
+  - Coach
+  - Assistant
+  - Manager
+  - Trainer
 
-#### 3. Federation Control Import
+#### 3. Team Management
 
-* Upload CSV per season or scenario.
-* Fixed column headers but flexible order.
-* Matched by `federationNumber`.
-* Trigger visual cues (e.g., border color, warning icon).
+* Create and manage teams with:
+  - Customizable team names
+  - Maximum player limits
+  - Age restrictions
+  - Staff assignments
+* Track team composition and statistics
 
-#### 4. Team Scenario Editor
+#### 4. Scenario Management
 
-* Create multiple scenario drafts per season.
-* Drag-and-drop interface for assigning players/staff to teams.
-* Undo/redo and multi-select supported.
-* Auto-calculation of player age based on season.
+* Create multiple scenarios per season
+* Duplicate existing scenarios
+* Track scenario status (draft, active, archived)
+* Manage team assignments within scenarios
+* Version control for team compositions
 
-#### 5. Team Templates
+#### 5. Configuration Panel
 
-* Define default structure per team type (e.g., gender, max players, required roles).
-* Validate against template when assigning players/staff.
+* Tabbed interface for managing:
+  - Teams
+  - Players
+  - Seasons
+* Intuitive forms for data entry
+* Bulk management capabilities
+* Search and filter functionality
 
-#### 6. Validation & Warnings
+#### 6. Dashboard
 
-* Validate in real-time without blocking user flow.
+* Season selector for easy navigation
+* Overview of active scenarios
+* Quick actions for scenario management
+* Real-time updates for team assignments
+
+#### 7. Validation & Warnings
+
+* Real-time validation without blocking user flow
 * Check for:
-
   * Duplicate assignments
   * Team size limits
   * Age category compliance
-  * Federation check flags
   * Required staff roles per team
-
-#### 7. Notes & Annotations
-
-* Attach notes to players, teams, or entire scenarios.
-* Flag issues, preferences, or special cases.
 
 #### 8. Scenario Status & Versioning
 
-* Status types: `Draft`, `Final`, `Archived`
-* Lock edits on finalized versions.
-* Duplicate scenarios for iteration.
-
-#### 9. Export Functionality
-
-* Export full scenario to Excel/CSV for federation submission or internal reporting.
+* Status types: `Draft`, `Active`, `Archived`
+* Lock edits on finalized versions
+* Duplicate scenarios for iteration
+* Track last updated and creator information
 
 ---
 
 ### 🔧 Technical Characteristics
 
-* Built with a component-based frontend (React).
-* Drag-and-drop powered by `@dnd-kit/core`.
-* Federation checks support CSV parsing with dynamic column mapping.
-* Age calculations and validation are centralized logic for consistency.
-* Undo/redo via history stack.
+* Built with React and TypeScript
+* Component-based architecture
+* CSS modules for styling
+* Context API for state management
+* Type-safe development
 
 ---
 
 ### ✅ Summary
 
-The Team Assignment Builder enables sports clubs to move from manual planning to a modern, rules-aware, collaborative environment. It accounts for federated data, flexible team structures, and real-time feedback, while remaining intuitive and adaptable for volunteers and professionals alike.
+The Team Assignment Builder enables sports clubs to move from manual planning to a modern, rules-aware, collaborative environment. It provides a clear separation between configuration and scenario management, with season-specific organization of team assignments. The application remains intuitive and adaptable for volunteers and professionals alike.

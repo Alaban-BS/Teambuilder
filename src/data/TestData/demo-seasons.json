@@ -1,0 +1,28 @@
+{
+  "seasons": [
+    {
+      "id": "season-1",
+      "name": "Spring 2024",
+      "startDate": "2024-03-01",
+      "endDate": "2024-06-01",
+      "status": "upcoming",
+      "registrationDeadline": "2024-02-15",
+      "maxTeams": 10,
+      "ageGroups": ["U10", "U12", "U14"],
+      "isActive": true,
+      "notes": ""
+    },
+    {
+      "id": "season-2",
+      "name": "Fall 2024",
+      "startDate": "2024-09-01",
+      "endDate": "2024-12-01",
+      "status": "upcoming",
+      "registrationDeadline": "2024-08-15",
+      "maxTeams": 12,
+      "ageGroups": ["U16", "U18"],
+      "isActive": false,
+      "notes": ""
+    }
+  ]
+} 

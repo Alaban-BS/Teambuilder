@@ -1,34 +1,22 @@
-import bcrypt from 'bcryptjs';
-import { UserWithPassword } from '../types';
+import { User } from '../types/index';
 
-// These are pre-hashed passwords using bcrypt
-// The original passwords are:
-// admin: 463100
-// antjanlaban@gmail.com: 039600
-export const users: UserWithPassword[] = [
+export const users: User[] = [
   {
-    id: '1',
+    id: 'user-1',
     username: 'admin',
     email: 'admin@example.com',
-    passwordHash: '$2a$10$3xRY/7zOSymCfXktkaO60OvyayktzWBFIbN.S7SpuMrpa0n9f9N9q', // 463100
     role: 'admin'
   },
   {
-    id: '2',
-    username: 'antjanlaban',
-    email: 'antjanlaban@gmail.com',
-    passwordHash: '$2a$10$NO0DKbMuAo2rFwy97/mTPevoNirVM8dPOEgmROPSNb0QDT7WC8Fom', // 039600
-    role: 'tc'
+    id: 'user-2',
+    username: 'manager',
+    email: 'manager@example.com',
+    role: 'manager'
+  },
+  {
+    id: 'user-3',
+    username: 'coordinator',
+    email: 'coordinator@example.com',
+    role: 'coordinator'
   }
-];
-
-// Function to verify a password against a hash
-export const verifyPassword = async (password: string, hash: string): Promise<boolean> => {
-  return bcrypt.compare(password, hash);
-};
-
-// Function to hash a new password (for future use)
-export const hashPassword = async (password: string): Promise<string> => {
-  const salt = await bcrypt.genSalt(10);
-  return bcrypt.hash(password, salt);
-}; 
+]; 

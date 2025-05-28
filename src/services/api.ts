@@ -1,4 +1,4 @@
-import { Player, Scenario, Season, Staff, Team, User } from '../types';
+import { Player, Scenario, Season, Staff, Team, User } from '../types/index';
 import { mockPlayers, mockScenarios, mockSeasons, mockStaff, mockTeams, mockUsers } from './mockData';
 
 class ApiService {

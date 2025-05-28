@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
-import { Toast as ToastType } from '../../types/common';
 import { useApp } from '../../contexts/AppContext';
+import { Toast as ToastType } from '../../types/index';
 import '../../styles/Toast.css';
 
 export function Toast({ toast }: { toast: ToastType }) {
@@ -15,17 +15,8 @@ export function Toast({ toast }: { toast: ToastType }) {
   }, [toast.id, toast.duration, dispatch]);
 
   return (
-    <div className={`toast toast-${toast.type}`} role="alert">
-      <div className="toast-content">
-        <span className="toast-message">{toast.message}</span>
-        <button
-          className="toast-close"
-          onClick={() => dispatch({ type: 'REMOVE_TOAST', payload: toast.id })}
-          aria-label="Close notification"
-        >
-          ×
-        </button>
-      </div>
+    <div className={`toast ${toast.type}`}>
+      {toast.message}
     </div>
   );
 }
@@ -34,7 +25,7 @@ export const ToastContainer: React.FC = () => {
   const { state, dispatch } = useApp();
 
   useEffect(() => {
-    const timers = state.toasts.map(toast => {
+    const timers = state.toasts.map((toast: ToastType) => {
       if (toast.duration) {
         return setTimeout(() => {
           dispatch({ type: 'REMOVE_TOAST', payload: toast.id });
@@ -44,7 +35,7 @@ export const ToastContainer: React.FC = () => {
     });
 
     return () => {
-      timers.forEach(timer => {
+      timers.forEach((timer) => {
         if (timer) clearTimeout(timer);
       });
     };
@@ -52,11 +43,12 @@ export const ToastContainer: React.FC = () => {
 
   return (
     <div className="toast-container" role="region" aria-label="Notifications">
-      {state.toasts.map((toast) => (
+      {state.toasts.map((toast: ToastType) => (
         <div
           key={toast.id}
           className={`toast toast-${toast.type}`}
-          onClick={() => dispatch({ type: 'REMOVE_TOAST', payload: toast.id })}
+          role="alert"
+          aria-live="assertive"
         >
           {toast.message}
         </div>

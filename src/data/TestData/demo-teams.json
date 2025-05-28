@@ -1,0 +1,54 @@
+{
+  "teams": [
+    {
+      "id": "team-1",
+      "name": "U10",
+      "location": "Field 1",
+      "maxPlayers": 12,
+      "minAge": 8,
+      "maxAge": 10,
+      "players": ["player-1"],
+      "staff": ["staff-1"]
+    },
+    {
+      "id": "team-2",
+      "name": "U12",
+      "location": "Field 2",
+      "maxPlayers": 12,
+      "minAge": 10,
+      "maxAge": 12,
+      "players": ["player-2"],
+      "staff": ["staff-2"]
+    },
+    {
+      "id": "team-3",
+      "name": "U14",
+      "location": "Field 3",
+      "maxPlayers": 12,
+      "minAge": 12,
+      "maxAge": 14,
+      "players": ["player-3"],
+      "staff": ["staff-3"]
+    },
+    {
+      "id": "team-4",
+      "name": "U16",
+      "location": "Field 4",
+      "maxPlayers": 12,
+      "minAge": 14,
+      "maxAge": 16,
+      "players": ["player-4"],
+      "staff": ["staff-1"]
+    },
+    {
+      "id": "team-5",
+      "name": "U18",
+      "location": "Field 5",
+      "maxPlayers": 12,
+      "minAge": 16,
+      "maxAge": 18,
+      "players": ["player-5"],
+      "staff": ["staff-2"]
+    }
+  ]
+} 
