@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import '../styles/TCDashboard.css';
 import { Player, Scenario, Season, Staff, Team } from '../types';
+import { PlayerAssignmentDialog } from './common/PlayerAssignmentDialog';
+import { usePlayerAssignment } from '../hooks/usePlayerAssignment';
 
 interface TCDashboardProps {
   teams: Team[];
@@ -212,6 +214,46 @@ function TCDashboard({
       phone: '',
     });
   };
+
+  const handlePlayerMove = (playerId: string, fromTeamId: string | undefined, toTeamId: string) => {
+    // Update the player's teamId
+    const updatedPlayer = players.find(p => p.id === playerId);
+    if (updatedPlayer) {
+      onPlayerUpdate({ ...updatedPlayer, teamId: toTeamId });
+    }
+
+    // Update the teams' player lists
+    if (fromTeamId) {
+      const fromTeam = teams.find(t => t.id === fromTeamId);
+      if (fromTeam) {
+        onTeamUpdate({
+          ...fromTeam,
+          players: fromTeam.players.filter(p => p !== playerId)
+        });
+      }
+    }
+
+    const toTeam = teams.find(t => t.id === toTeamId);
+    if (toTeam) {
+      onTeamUpdate({
+        ...toTeam,
+        players: [...toTeam.players, playerId]
+      });
+    }
+  };
+
+  const {
+    isDialogOpen,
+    selectedPlayer,
+    targetTeam,
+    handlePlayerAssignment,
+    handleConfirm,
+    handleCancel,
+    handleClose
+  } = usePlayerAssignment({
+    teams,
+    onPlayerMove: handlePlayerMove
+  });
 
   const renderScenariosTab = () => (
     <div className="scenarios-section">
@@ -854,311 +896,167 @@ function TCDashboard({
     </div>
   );
 
-  const renderScenarioForm = () => (
-    <form className="edit-form" onSubmit={handleScenarioSubmit}>
-      <h4>{isCreatingScenario ? 'Create Scenario' : 'Edit Scenario'}</h4>
-      <div className="form-group">
-        <label>Name</label>
-        <input
-          type="text"
-          value={editingScenario?.name || ''}
-          onChange={(e) =>
-            setEditingScenario((prev) =>
-              prev
-                ? {
-                    ...prev,
-                    name: e.target.value,
-                  }
-                : null
-            )
-          }
-          required
-        />
-      </div>
-      <div className="form-group">
-        <label>Status</label>
-        <select
-          value={editingScenario?.status || 'draft'}
-          onChange={(e) =>
-            setEditingScenario((prev) =>
-              prev
-                ? {
-                    ...prev,
-                    status: e.target.value as 'draft' | 'active' | 'archived',
-                  }
-                : null
-            )
-          }
-        >
-          <option value="draft">Draft</option>
-          <option value="active">Active</option>
-          <option value="archived">Archived</option>
-        </select>
-      </div>
-      <div className="form-group">
-        <label>Team Assignments</label>
-        {editingScenario?.teamAssignments.map((assignment, index) => (
-          <div key={index} className="team-assignment-row">
+  const renderPlayerList = () => (
+    <div className="space-y-4">
+      {players.map(player => (
+        <div key={player.id} className="flex items-center justify-between p-4 bg-white rounded shadow">
+          <div>
+            <h3 className="font-medium">{player.firstName} {player.lastName}</h3>
+            <p className="text-sm text-gray-600">{player.position} • {player.age} years old</p>
+          </div>
+          <div className="flex items-center space-x-4">
             <select
-              value={assignment.teamId}
-              onChange={(e) =>
-                setEditingScenario((prev) =>
-                  prev
-                    ? {
-                        ...prev,
-                        teamAssignments: prev.teamAssignments.map((t, i) =>
-                          i === index
-                            ? { ...t, teamId: e.target.value }
-                            : t
-                        ),
-                      }
-                    : null
-                )
-              }
+              value={player.teamId || ''}
+              onChange={(e) => {
+                const targetTeam = teams.find(t => t.id === e.target.value);
+                if (targetTeam) {
+                  handlePlayerAssignment(player, targetTeam);
+                }
+              }}
+              className="border rounded px-2 py-1"
             >
-              <option value="">Select a team</option>
-              {teams.map((team) => (
+              <option value="">No Team</option>
+              {teams.map(team => (
                 <option key={team.id} value={team.id}>
                   {team.name}
                 </option>
               ))}
             </select>
-            <div className="player-selection">
-              {players.map((player) => (
-                <label key={player.id} className="player-checkbox">
-                  <input
-                    type="checkbox"
-                    checked={assignment.players.includes(player.id)}
-                    onChange={(e) =>
-                      setEditingScenario((prev) =>
-                        prev
-                          ? {
-                              ...prev,
-                              teamAssignments: prev.teamAssignments.map((t, i) =>
-                                i === index
-                                  ? {
-                                      ...t,
-                                      players: e.target.checked
-                                        ? [...t.players, player.id]
-                                        : t.players.filter(
-                                            (id) => id !== player.id
-                                          ),
-                                    }
-                                  : t
-                              ),
-                            }
-                          : null
-                      )
-                    }
-                  />
-                  {player.firstName} {player.lastName}
-                </label>
-              ))}
-            </div>
-            <div className="staff-selection">
-              {staff.map((staffMember) => (
-                <label key={staffMember.id} className="staff-checkbox">
-                  <input
-                    type="checkbox"
-                    checked={assignment.staff.includes(staffMember.id)}
-                    onChange={(e) =>
-                      setEditingScenario((prev) =>
-                        prev
-                          ? {
-                              ...prev,
-                              teamAssignments: prev.teamAssignments.map((t, i) =>
-                                i === index
-                                  ? {
-                                      ...t,
-                                      staff: e.target.checked
-                                        ? [...t.staff, staffMember.id]
-                                        : t.staff.filter(
-                                            (id) => id !== staffMember.id
-                                          ),
-                                    }
-                                  : t
-                              ),
-                            }
-                          : null
-                      )
-                    }
-                  />
-                  {staffMember.name}
-                </label>
-              ))}
-            </div>
+            <button
+              onClick={() => setEditingPlayer(player)}
+              className="text-blue-600 hover:text-blue-800"
+            >
+              Edit
+            </button>
+            <button
+              onClick={() => onPlayerDelete(player.id)}
+              className="text-red-600 hover:text-red-800"
+            >
+              Delete
+            </button>
           </div>
-        ))}
-        <button
-          type="button"
-          className="add-button"
-          onClick={() =>
-            setEditingScenario((prev) =>
-              prev
-                ? {
-                    ...prev,
-                    teamAssignments: [
-                      ...prev.teamAssignments,
-                      { teamId: '', players: [], staff: [] },
-                    ],
-                  }
-                : null
-            )
-          }
-        >
-          Add Team Assignment
-        </button>
-      </div>
-      <div className="form-actions">
-        <button type="submit" className="save-button">
-          {isCreatingScenario ? 'Create Scenario' : 'Save Changes'}
-        </button>
-        <button
-          type="button"
-          className="cancel-button"
-          onClick={() => {
-            setEditingScenario(null);
-            setIsCreatingScenario(false);
-          }}
-        >
-          Cancel
-        </button>
-      </div>
-    </form>
+        </div>
+      ))}
+    </div>
   );
 
   return (
-    <div className="tc-dashboard">
-      <div className="tc-header">
-        <h2>Team Coordinator Dashboard</h2>
-        <div className="tc-tabs">
-          <button
-            className={activeTab === 'teams' ? 'active' : ''}
-            onClick={() => setActiveTab('teams')}
-          >
-            Teams
-          </button>
-          <button
-            className={activeTab === 'players' ? 'active' : ''}
-            onClick={() => setActiveTab('players')}
-          >
-            Players
-          </button>
-          <button
-            className={activeTab === 'staff' ? 'active' : ''}
-            onClick={() => setActiveTab('staff')}
-          >
-            Staff
-          </button>
-          <button
-            className={activeTab === 'seasons' ? 'active' : ''}
-            onClick={() => setActiveTab('seasons')}
-          >
-            Seasons
-          </button>
-          <button
-            className={activeTab === 'scenarios' ? 'active' : ''}
-            onClick={() => setActiveTab('scenarios')}
-          >
-            Scenarios
-          </button>
+    <div className="container mx-auto px-4 py-8">
+      <div className="tc-dashboard">
+        <div className="tc-header">
+          <h2>Team Coordinator Dashboard</h2>
+          <div className="tc-tabs">
+            <button
+              className={activeTab === 'teams' ? 'active' : ''}
+              onClick={() => setActiveTab('teams')}
+            >
+              Teams
+            </button>
+            <button
+              className={activeTab === 'players' ? 'active' : ''}
+              onClick={() => setActiveTab('players')}
+            >
+              Players
+            </button>
+            <button
+              className={activeTab === 'staff' ? 'active' : ''}
+              onClick={() => setActiveTab('staff')}
+            >
+              Staff
+            </button>
+            <button
+              className={activeTab === 'seasons' ? 'active' : ''}
+              onClick={() => setActiveTab('seasons')}
+            >
+              Seasons
+            </button>
+            <button
+              className={activeTab === 'scenarios' ? 'active' : ''}
+              onClick={() => setActiveTab('scenarios')}
+            >
+              Scenarios
+            </button>
+          </div>
+        </div>
+
+        <div className="tc-content">
+          {activeTab === 'teams' ? (
+            <div className="teams-management">
+              <div className="management-header">
+                <h3>Teams Management</h3>
+                <button
+                  className="create-button"
+                  onClick={handleCreateTeam}
+                >
+                  Create New Team
+                </button>
+              </div>
+
+              {(editingTeam || isCreatingTeam) && renderTeamForm()}
+
+              {renderTeamList()}
+            </div>
+          ) : activeTab === 'players' ? (
+            <div className="players-management">
+              <div className="management-header">
+                <h3>Players Management</h3>
+                <button
+                  className="create-button"
+                  onClick={handleCreatePlayer}
+                >
+                  Create New Player
+                </button>
+              </div>
+
+              {(editingPlayer || isCreatingPlayer) && renderPlayerForm()}
+
+              {renderPlayerList()}
+            </div>
+          ) : activeTab === 'staff' ? (
+            <div className="staff-management">
+              <div className="management-header">
+                <h3>Staff Management</h3>
+                <button
+                  className="create-button"
+                  onClick={handleCreateStaff}
+                >
+                  Add New Staff
+                </button>
+              </div>
+
+              {(editingStaff || isCreatingStaff) && renderStaffForm()}
+
+              {renderStaffList()}
+            </div>
+          ) : activeTab === 'seasons' ? (
+            <div className="seasons-management">
+              <div className="management-header">
+                <h3>Season Management</h3>
+                <button
+                  className="create-button"
+                  onClick={handleCreateSeason}
+                >
+                  Create New Season
+                </button>
+              </div>
+
+              {(editingSeason || isCreatingSeason) && renderSeasonForm()}
+
+              {renderSeasonList()}
+            </div>
+          ) : renderScenariosTab()}
         </div>
       </div>
 
-      <div className="tc-content">
-        {activeTab === 'teams' ? (
-          <div className="teams-management">
-            <div className="management-header">
-              <h3>Teams Management</h3>
-              <button
-                className="create-button"
-                onClick={handleCreateTeam}
-              >
-                Create New Team
-              </button>
-            </div>
-
-            {(editingTeam || isCreatingTeam) && renderTeamForm()}
-
-            {renderTeamList()}
-          </div>
-        ) : activeTab === 'players' ? (
-          <div className="players-management">
-            <div className="management-header">
-              <h3>Players Management</h3>
-              <button
-                className="create-button"
-                onClick={handleCreatePlayer}
-              >
-                Create New Player
-              </button>
-            </div>
-
-            {(editingPlayer || isCreatingPlayer) && renderPlayerForm()}
-
-            <div className="players-list">
-              {players.map((player) => (
-                <div key={player.id} className="player-card">
-                  <div className="player-info">
-                    <h4>{player.firstName} {player.lastName}</h4>
-                    <p>Gender: {player.gender}</p>
-                    {player.age && <p>Age: {player.age}</p>}
-                    <p>Position: {player.position}</p>
-                    {player.email && <p>Email: {player.email}</p>}
-                    {player.phone && <p>Phone: {player.phone}</p>}
-                  </div>
-                  <div className="player-actions">
-                    <button
-                      className="edit-button"
-                      onClick={() => setEditingPlayer(player)}
-                    >
-                      Edit
-                    </button>
-                    <button
-                      className="delete-button"
-                      onClick={() => onPlayerDelete(player.id)}
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        ) : activeTab === 'staff' ? (
-          <div className="staff-management">
-            <div className="management-header">
-              <h3>Staff Management</h3>
-              <button
-                className="create-button"
-                onClick={handleCreateStaff}
-              >
-                Add New Staff
-              </button>
-            </div>
-
-            {(editingStaff || isCreatingStaff) && renderStaffForm()}
-
-            {renderStaffList()}
-          </div>
-        ) : activeTab === 'seasons' ? (
-          <div className="seasons-management">
-            <div className="management-header">
-              <h3>Season Management</h3>
-              <button
-                className="create-button"
-                onClick={handleCreateSeason}
-              >
-                Create New Season
-              </button>
-            </div>
-
-            {(editingSeason || isCreatingSeason) && renderSeasonForm()}
-
-            {renderSeasonList()}
-          </div>
-        ) : renderScenariosTab()}
-      </div>
+      <PlayerAssignmentDialog
+        isOpen={isDialogOpen}
+        player={selectedPlayer}
+        currentTeam={teams.find(t => t.players.includes(selectedPlayer?.id || '')) || null}
+        targetTeam={targetTeam}
+        onConfirm={handleConfirm}
+        onCancel={handleCancel}
+        onClose={handleClose}
+      />
     </div>
   );
 }

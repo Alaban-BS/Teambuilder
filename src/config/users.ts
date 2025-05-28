@@ -4,7 +4,7 @@ import { UserWithPassword } from '../types';
 // These are pre-hashed passwords using bcrypt
 // The original passwords are:
 // admin: 463100
-// antjanlaban@gmail.com: 036900
+// antjanlaban@gmail.com: 039600
 export const users: UserWithPassword[] = [
   {
     id: '1',
@@ -17,7 +17,7 @@ export const users: UserWithPassword[] = [
     id: '2',
     username: 'antjanlaban',
     email: 'antjanlaban@gmail.com',
-    passwordHash: '$2a$10$awesNLA6qdpIplxxHEocnOZ8ekO3hYMQm4np8d7aCrEJviyOql5Cm', // 036900
+    passwordHash: '$2a$10$NO0DKbMuAo2rFwy97/mTPevoNirVM8dPOEgmROPSNb0QDT7WC8Fom', // 039600
     role: 'tc'
   }
 ];

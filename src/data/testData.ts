@@ -1,4 +1,4 @@
-import { Player, Team } from '../types';
+import { Player, Team } from '../types.js';
 
 export const teams = [
   {

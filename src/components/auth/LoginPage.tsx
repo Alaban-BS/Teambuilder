@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useDataMode } from '../../contexts/DataModeContext';
-import { createApiService } from '../../services/api';
 import '../../styles/LoginPage.css';
 
 export const LoginPage: React.FC = () => {
@@ -18,26 +17,11 @@ export const LoginPage: React.FC = () => {
     setError('');
 
     try {
-      // For mock data, we'll use a simple password check
-      if (useMockData) {
-        const apiService = createApiService(useMockData);
-        const users = await apiService.getUsers();
-        const user = users.find(u => u.username === username);
-
-        if (user) {
-          // In mock mode, accept any password
-          await login(username, 'mock-password');
-          navigate('/dashboard');
-        } else {
-          setError('Invalid username or password');
-        }
-      } else {
-        // For real data, use the actual login function
-        await login(username, password);
-        navigate('/dashboard');
-      }
+      // Use the same login flow regardless of mock data mode
+      await login(username, password);
+      navigate('/dashboard');
     } catch (err) {
-      setError('An error occurred during login');
+      setError('Invalid username or password');
     }
   };
 
@@ -61,7 +45,7 @@ export const LoginPage: React.FC = () => {
                 type="text"
                 required
                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Username"
+                placeholder="Username or Email"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
               />
@@ -83,20 +67,18 @@ export const LoginPage: React.FC = () => {
             </div>
           </div>
 
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <input
-                id="mock-data"
-                name="mock-data"
-                type="checkbox"
-                className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-                checked={useMockData}
-                onChange={toggleDataMode}
-              />
-              <label htmlFor="mock-data" className="ml-2 block text-sm text-gray-900">
-                Use Mock Data
-              </label>
-            </div>
+          <div className="flex items-center">
+            <input
+              id="mock-data"
+              name="mock-data"
+              type="checkbox"
+              className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+              checked={useMockData}
+              onChange={toggleDataMode}
+            />
+            <label htmlFor="mock-data" className="ml-2 block text-sm text-gray-900">
+              Use Sample Data
+            </label>
           </div>
 
           {error && (

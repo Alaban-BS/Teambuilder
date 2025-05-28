@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState, FC, ReactNode } from 'react';
 
 interface DataModeContextType {
   useMockData: boolean;
@@ -7,10 +7,11 @@ interface DataModeContextType {
 
 const DataModeContext = createContext<DataModeContextType | undefined>(undefined);
 
-export const DataModeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [useMockData, setUseMockData] = useState(() => {
-    const saved = localStorage.getItem('useMockData');
-    return saved ? JSON.parse(saved) : true; // Default to mock data
+export const DataModeProvider: FC<{ children: ReactNode }> = ({ children }) => {
+  // Initialize state from localStorage
+  const [useMockData, setUseMockData] = useState<boolean>(() => {
+    const savedMode = localStorage.getItem('useMockData');
+    return savedMode ? JSON.parse(savedMode) : false;
   });
 
   useEffect(() => {
@@ -18,7 +19,7 @@ export const DataModeProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   }, [useMockData]);
 
   const toggleDataMode = () => {
-    setUseMockData(prev => !prev);
+    setUseMockData((prev: boolean) => !prev);
   };
 
   return (
