@@ -252,7 +252,17 @@ function TCDashboard({
     handleClose
   } = usePlayerAssignment({
     teams,
-    onPlayerMove: handlePlayerMove
+    teamAssignments: editingScenario?.teamAssignments || [],
+    setTeamAssignments: (assignments) => {
+      if (editingScenario) {
+        setEditingScenario({
+          ...editingScenario,
+          teamAssignments: typeof assignments === 'function' 
+            ? assignments(editingScenario.teamAssignments)
+            : assignments
+        });
+      }
+    }
   });
 
   const renderScenariosTab = () => (
